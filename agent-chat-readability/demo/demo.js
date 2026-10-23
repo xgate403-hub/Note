@@ -7,6 +7,8 @@
   const theme = qs.get('theme') || localStorage.getItem('theme') || 'light';
   root.dataset.theme = theme;
   if (qs.get('density')) root.dataset.density = qs.get('density');
+  const vision = qs.get('vision') || localStorage.getItem('vision') || '';
+  if (vision) root.dataset.vision = vision;
   if (qs.get('capture') === '1') document.body.classList.add('capture');
   if (qs.get('mobile') === '1') document.body.classList.add('mobile');
 
@@ -15,13 +17,11 @@
   document.querySelectorAll('#nav a').forEach(a => {
     const sc = new URL(a.href).searchParams.get('scene');
     a.classList.toggle('on', sc === scene);
-    const u = new URL(a.href); u.searchParams.set('theme', root.dataset.theme); a.href = u.toString();
+    const u = new URL(a.href); u.searchParams.set('theme', root.dataset.theme); if (root.dataset.vision) u.searchParams.set('vision', root.dataset.vision); a.href = u.toString();
   });
-  document.getElementById('themeBtn').onclick = () => {
-    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
-    localStorage.setItem('theme', next);
-    const u = new URL(location.href); u.searchParams.set('theme', next); location.href = u.toString();
-  };
+  const reload = (k, v) => { localStorage.setItem(k, v); const u = new URL(location.href); if (v) u.searchParams.set(k, v); else u.searchParams.delete(k); location.href = u.toString(); };
+  document.getElementById('visionBtn').onclick = () => reload('vision', root.dataset.vision === 'assist' ? '' : 'assist');
+  document.getElementById('themeBtn').onclick = () => reload('theme', root.dataset.theme === 'dark' ? 'light' : 'dark');
   document.getElementById('densityBtn').onclick = () => {
     root.dataset.density = root.dataset.density === 'compact' ? '' : 'compact';
   };
@@ -44,21 +44,30 @@
   const ts = document.getElementById('textSwatches');
   if (ts) {
     const bg = v('--bg'), sf = v('--surface');
+    const A = root.dataset.vision === 'assist';
     ts.innerHTML =
-      swatch('--text 正文', v('--text'), bg, 7) +
-      swatch('--text-2 次级', v('--text-2'), bg, 4.5) +
-      swatch('--text-3 三级', v('--text-3'), bg, 4.5) +
-      swatch('--text-4 占位', v('--text-4'), bg, 3) +
+      swatch('--text 正文', v('--text'), bg, A ? 10 : 7) +
+      swatch('--text-2 次级', v('--text-2'), bg, A ? 7 : 4.5) +
+      swatch('--text-3 三级', v('--text-3'), bg, A ? 7 : 4.5) +
+      swatch('--text-4 占位', v('--text-4'), bg, A ? 4.5 : 3) +
       swatch('--text on surface', v('--text'), sf, 7) +
       swatch('--thinking', v('--thinking'), v('--thinking-bg'), 4.5);
   }
   const ss = document.getElementById('semSwatches');
   if (ss) {
     const bg = v('--bg');
+    const A = root.dataset.vision === 'assist', m = A ? 7 : 4.5;
     ss.innerHTML = ['accent', 'success', 'warning', 'danger'].map(k =>
-      swatch(`--${k}`, v('--' + k), bg, 4.5) + swatch(`--${k} on bg`, v('--' + k), v(`--${k}-bg`), 4.5)
-    ).join('') + swatch('--neutral', v('--neutral'), bg, 4.5);
+      swatch(`--${k}`, v('--' + k), bg, m) + swatch(`--${k} on bg`, v('--' + k), v(`--${k}-bg`), m)
+    ).join('') + swatch('--neutral', v('--neutral'), bg, m) + swatch('--uni-1 点缀', v('--uni-1'), bg, 0) + swatch('--uni-2 点缀', v('--uni-2'), bg, 0) + swatch('--uni-3 点缀', v('--uni-3'), bg, 0);
   }
+
+  const ansiNames = ['black','red','green','yellow','blue','magenta','cyan','white'];
+  document.querySelectorAll('#ansiGrid, #ansiGrid2').forEach(g => {
+    const bg = v('--bg');
+    g.innerHTML = ansiNames.map(n => { const c = v('--ansi-' + n); const r = ratio(c, bg); return `<div class="c" style="color:${c}"><b>${n}</b>${c}<small>${r.toFixed(1)}:1</small></div>`; }).join('') +
+      ansiNames.map(n => { const c = v('--ansi-bright-' + n); const r = ratio(c, bg); return `<div class="c" style="color:${c}"><b>br-${n}</b>${c}<small>${r.toFixed(1)}:1</small></div>`; }).join('');
+  });
 
   /* ---------- SVG 工具 ---------- */
   const NS = 'http://www.w3.org/2000/svg';

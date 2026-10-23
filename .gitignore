@@ -1,0 +1,2 @@
+# 中文字体体积大（4 × 4MB）不入库，运行 agent-chat-readability/tools/fetch-fonts.sh 获取
+agent-chat-readability/demo/fonts/IBMPlexSansSC-*.woff2

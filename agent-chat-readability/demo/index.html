@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Agent 会话窗口 · 易读显示方案原型</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="demo.css">
 </head>
@@ -15,12 +15,12 @@
   <defs>
     <symbol id="i-pending" viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.5" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
     <symbol id="i-running" viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.5" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".25"/><path d="M6 1.5a4.5 4.5 0 0 1 4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
-    <symbol id="i-done" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" fill="currentColor"/><path d="M3.6 6.2l1.7 1.6 3.2-3.4" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-failed" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" fill="currentColor"/><path d="M4 4l4 4M8 4l-4 4" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></symbol>
+    <symbol id="i-done" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" fill="currentColor"/><path d="M3.6 6.2l1.7 1.6 3.2-3.4" fill="none" style="stroke:var(--bg)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-failed" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" fill="currentColor"/><path d="M4 4l4 4M8 4l-4 4" style="stroke:var(--bg)" stroke-width="1.5" stroke-linecap="round"/></symbol>
     <symbol id="i-waiting" viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 3.3V6l1.9 1.3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
     <symbol id="i-skipped" viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3.5 6h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
     <symbol id="i-chev" viewBox="0 0 12 12"><path d="M4 2.5L7.5 6 4 9.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-agent" viewBox="0 0 16 16"><path d="M3 5.5A2.5 2.5 0 0 1 5.5 3h5A2.5 2.5 0 0 1 13 5.5v4a2.5 2.5 0 0 1-2.5 2.5H7l-2.6 2v-2A2.5 2.5 0 0 1 3 9.5z" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="6.5" cy="7.5" r=".9" fill="currentColor"/><circle cx="9.5" cy="7.5" r=".9" fill="currentColor"/></symbol>
+    <symbol id="i-agent" viewBox="0 0 12 12"><rect class="h" x="10" y="0" width="1" height="1"/><rect class="h" x="9" y="1" width="1" height="1"/><rect class="h" x="10" y="1" width="1" height="1"/><rect class="h" x="8" y="4" width="1" height="1"/><rect class="h" x="7" y="4" width="1" height="1"/><rect class="h" x="6" y="4" width="1" height="1"/><rect class="h" x="5" y="5" width="1" height="1"/><rect class="h" x="6" y="5" width="1" height="1"/><rect class="h" x="7" y="5" width="1" height="1"/><rect class="h" x="2" y="8" width="1" height="1"/><rect class="h" x="3" y="8" width="1" height="1"/><rect class="h" x="4" y="8" width="1" height="1"/><rect class="h" x="5" y="8" width="1" height="1"/><rect class="h" x="6" y="8" width="1" height="1"/><rect class="h" x="2" y="9" width="1" height="1"/><rect class="h" x="3" y="9" width="1" height="1"/><rect class="h" x="4" y="9" width="1" height="1"/><rect class="h" x="5" y="9" width="1" height="1"/><rect class="h2" x="8" y="2" width="1" height="1"/><rect class="h2" x="9" y="2" width="1" height="1"/><rect class="h2" x="7" y="3" width="1" height="1"/><rect class="h2" x="8" y="3" width="1" height="1"/><rect class="h2" x="4" y="6" width="1" height="1"/><rect class="h2" x="5" y="6" width="1" height="1"/><rect class="h2" x="6" y="6" width="1" height="1"/><rect class="h2" x="7" y="6" width="1" height="1"/><rect class="h2" x="3" y="7" width="1" height="1"/><rect class="h2" x="4" y="7" width="1" height="1"/><rect class="h2" x="5" y="7" width="1" height="1"/><rect class="h2" x="6" y="7" width="1" height="1"/><rect class="sp" x="2" y="1" width="1" height="1"/><rect class="sp" x="1" y="2" width="1" height="1"/><rect class="sp" x="3" y="2" width="1" height="1"/><rect class="sp" x="2" y="3" width="1" height="1"/></symbol>
     <symbol id="i-info" viewBox="0 0 18 18"><circle cx="9" cy="9" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9 8v4.5M9 5.5v.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
     <symbol id="i-warn" viewBox="0 0 18 18"><path d="M9 2.5l7 12.5H2z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 7v3.5M9 13v.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
     <symbol id="i-err" viewBox="0 0 18 18"><rect x="2.5" y="2.5" width="13" height="13" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 6.5l5 5M11.5 6.5l-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
@@ -32,9 +32,10 @@
 </svg>
 
 <nav class="nav" id="nav">
-  <a href="?scene=overview">总览</a><a href="?scene=streaming">流式输出</a><a href="?scene=tools">工具调用</a><a href="?scene=plan">计划清单</a><a href="?scene=dag">DAG</a><a href="?scene=flow">流程图</a><a href="?scene=decision">决策与提示</a><a href="?scene=code">代码与 diff</a><a href="?scene=typography">字体排版</a><a href="?scene=color">色彩</a><a href="?scene=antipatterns">反例对照</a>
+  <a href="?scene=overview">总览</a><a href="?scene=streaming">流式</a><a href="?scene=reasoning">推理摘要</a><a href="?scene=reasoning-open">推理展开</a><a href="?scene=result">结果文本</a><a href="?scene=tools">工具</a><a href="?scene=terminal">日志</a><a href="?scene=plan">清单</a><a href="?scene=dag">DAG</a><a href="?scene=flow">流程图</a><a href="?scene=decision">决策</a><a href="?scene=code">代码</a><a href="?scene=assist">视觉辅助</a><a href="?scene=typography">排版</a><a href="?scene=color">色彩</a><a href="?scene=antipatterns">反例</a>
   <span class="spacer"></span>
-  <button id="themeBtn" type="button">切换主题</button>
+  <button id="themeBtn" type="button">主题</button>
+  <button id="visionBtn" type="button">视觉辅助</button>
   <button id="densityBtn" type="button">密度</button>
 </nav>
 
@@ -44,9 +45,9 @@
 <section class="scene" data-scene="overview">
   <div class="chat">
     <div class="turn">
-      <div class="turn-rail"><div class="avatar user">你</div></div>
+      <div class="turn-rail"><div class="avatar user"><span class="px accent">U</span></div></div>
       <div class="turn-body">
-        <div class="turn-head"><b>你</b><span>14:02</span></div>
+        <div class="turn-head"><b>You</b><span class="t">14:02</span></div>
         <div class="user-msg">CI 在 Node 22 上总是超时，Node 20 正常。帮我查一下原因，不要改代码，先告诉我结论。</div>
       </div>
     </div>
@@ -54,7 +55,7 @@
     <div class="turn">
       <div class="turn-rail"><div class="avatar agent"><svg><use href="#i-agent"/></svg></div></div>
       <div class="turn-body">
-        <div class="turn-head"><b>Agent</b><span>14:02 · 用时 48s</span></div>
+        <div class="turn-head"><b>Agent</b><span class="t">14:02 · 48s</span></div>
 
         <details class="thinking">
           <summary><svg class="chev"><use href="#i-chev"/></svg><span>思考过程</span><span class="muted">· 12s</span></summary>
@@ -70,7 +71,7 @@
         </details>
 
         <div class="prose">
-          <div class="answer"><div class="k">结论</div>超时来自 <code>api/upload.test.ts</code>：Node 22 的全局 <code>fetch</code> 默认保持连接（keep-alive），而测试里的 mock server 从不主动关闭，Jest 等待事件循环清空直到被 CI 的 30 分钟上限杀掉。Node 20 没有这个默认行为，所以正常。</div>
+          <div class="answer"><div class="k">结论 <span class="px">answer</span></div>超时来自 <code>api/upload.test.ts</code>：Node 22 的全局 <code>fetch</code> 默认保持连接（keep-alive），而测试里的 mock server 从不主动关闭，Jest 等待事件循环清空直到被 CI 的 30 分钟上限杀掉。Node 20 没有这个默认行为，所以正常。</div>
 
           <h3>依据</h3>
           <ul>
@@ -90,6 +91,7 @@
 
           <div class="next"><div class="k">下一步（需要你决定）</div>按你的要求我没有改代码。最小修复是在 <code>afterAll</code> 里调用 <code>server.close()</code> 并给 fetch 传 <code>keepalive: false</code>，大约 3 行改动。要我提交吗？</div>
         </div>
+        <div class="settled"><span class="spark">✦</span><span class="px">done · 48s · 4 tools</span></div>
         <div class="footer-actions"><span>复制</span><span>重新生成</span><span>查看原始输出</span></div>
       </div>
     </div>
@@ -100,16 +102,16 @@
 <section class="scene" data-scene="streaming">
   <div class="chat">
     <div class="turn">
-      <div class="turn-rail"><div class="avatar user">你</div></div>
+      <div class="turn-rail"><div class="avatar user"><span class="px accent">U</span></div></div>
       <div class="turn-body">
-        <div class="turn-head"><b>你</b><span>14:05</span></div>
+        <div class="turn-head"><b>You</b><span class="t">14:05</span></div>
         <div class="user-msg">好，那就按最小修复改，顺便把测试跑一遍。</div>
       </div>
     </div>
     <div class="turn">
       <div class="turn-rail"><div class="avatar agent"><svg><use href="#i-agent"/></svg></div></div>
       <div class="turn-body">
-        <div class="turn-head"><b>Agent</b><span>14:05</span></div>
+        <div class="turn-head"><b>Agent</b><span class="t">14:05</span></div>
 
         <!-- 状态行：始终告诉用户“现在在做什么、已经多久、怎么停” -->
         <div class="status-line"><span class="st running"><span class="dot"><svg><use href="#i-running"/></svg></span>正在运行测试</span><span class="elapsed" data-elapsed="23">00:23</span><button class="stop" type="button"><i></i>停止 <span class="kbd">Esc</span></button></div>
@@ -157,7 +159,7 @@
     <div class="turn">
       <div class="turn-rail"><div class="avatar agent"><svg><use href="#i-agent"/></svg></div></div>
       <div class="turn-body">
-        <div class="turn-head"><b>Agent</b><span>14:09</span></div>
+        <div class="turn-head"><b>Agent</b><span class="t">14:09</span></div>
         <div class="status-line"><span class="st waiting"><span class="dot"><svg><use href="#i-waiting"/></svg></span>有一步失败，等待处理</span></div>
 
         <details class="activity" open>
@@ -213,7 +215,7 @@ run 8790 was deleted by the retention policy (90 days)</div>
     <div class="turn">
       <div class="turn-rail"><div class="avatar agent"><svg><use href="#i-agent"/></svg></div></div>
       <div class="turn-body">
-        <div class="turn-head"><b>Agent</b><span>15:20</span></div>
+        <div class="turn-head"><b>Agent</b><span class="t">15:20</span></div>
         <div class="status-line"><span class="st running"><span class="dot"><svg><use href="#i-running"/></svg></span>第 2 阶段 · 迁移数据库 schema</span><span class="elapsed">04:12</span><button class="stop" type="button"><i></i>停止</button></div>
         <div class="prose">
           <p>把上传服务从单机迁到对象存储，分三个阶段。过去的步骤变灰、当前步骤高亮、未开始的只有轮廓：</p>
@@ -248,7 +250,7 @@ run 8790 was deleted by the retention policy (90 days)</div>
     <div class="turn">
       <div class="turn-rail"><div class="avatar agent"><svg><use href="#i-agent"/></svg></div></div>
       <div class="turn-body">
-        <div class="turn-head"><b>Agent</b><span>16:01</span></div>
+        <div class="turn-head"><b>Agent</b><span class="t">16:01</span></div>
         <div class="status-line"><span class="st running"><span class="dot"><svg><use href="#i-running"/></svg></span>并行执行 2 个任务</span><span class="elapsed">01:37</span><button class="stop" type="button"><i></i>停止</button></div>
         <div class="prose">
           <p>发布流程有依赖关系，用图比清单清楚。从左到右按层排列，已完成的边是实线绿色，当前活动路径加粗，未开始的是虚线：</p>
@@ -269,7 +271,7 @@ run 8790 was deleted by the retention policy (90 days)</div>
     <div class="turn">
       <div class="turn-rail"><div class="avatar agent"><svg><use href="#i-agent"/></svg></div></div>
       <div class="turn-body">
-        <div class="turn-head"><b>Agent</b><span>16:14</span></div>
+        <div class="turn-head"><b>Agent</b><span class="t">16:14</span></div>
         <div class="prose">
           <p>这是我处理每条告警的判断流程，蓝色 ▶ 标记是<strong>当前所在位置</strong>。决策节点用菱形、动作用圆角矩形，Yes/No 永远标在边上而不是节点里：</p>
           <div class="graph" id="flow1"></div>
@@ -286,7 +288,7 @@ run 8790 was deleted by the retention policy (90 days)</div>
     <div class="turn">
       <div class="turn-rail"><div class="avatar agent"><svg><use href="#i-agent"/></svg></div></div>
       <div class="turn-body">
-        <div class="turn-head"><b>Agent</b><span>16:30</span></div>
+        <div class="turn-head"><b>Agent</b><span class="t">16:30</span></div>
         <div class="status-line"><span class="st waiting"><span class="dot"><svg><use href="#i-waiting"/></svg></span>等待你的决定 · 其余工作已暂停</span></div>
         <div class="prose">
           <div class="ask">
@@ -317,7 +319,7 @@ run 8790 was deleted by the retention policy (90 days)</div>
     <div class="turn">
       <div class="turn-rail"><div class="avatar agent"><svg><use href="#i-agent"/></svg></div></div>
       <div class="turn-body">
-        <div class="turn-head"><b>Agent</b><span>14:07</span></div>
+        <div class="turn-head"><b>Agent</b><span class="t">14:07</span></div>
         <div class="prose">
           <p>两处改动如下。增删行同时用<strong>底色 + 行首符号 + 行号颜色</strong>三种方式标记，色觉障碍下也能区分：</p>
           <div class="codeblock diff">
@@ -347,14 +349,15 @@ run 8790 was deleted by the retention policy (90 days)</div>
 <section class="scene" data-scene="typography">
   <div class="spec">
     <div class="card scale">
-      <h3>字号阶梯与行高（基准 15px / 1.7）</h3>
+      <h3>字号阶梯与行高（笔记本基准 15px / 1.7，手机 16px / 1.65）</h3>
       <div class="row"><small>2xl 24 / 1.3 / 600</small><div style="font-size:24px;line-height:1.3;font-weight:600">会话标题：上传服务迁移</div></div>
       <div class="row"><small>xl 20 / 1.3 / 600</small><div style="font-size:20px;line-height:1.3;font-weight:600">消息内二级标题 Section heading</div></div>
       <div class="row"><small>lg 17 / 1.3 / 600</small><div style="font-size:17px;line-height:1.3;font-weight:600">消息内三级标题 Sub heading</div></div>
-      <div class="row"><small>md 15 / 1.7 / 400</small><div>正文：中文每行 32–42 字时眼跳回扫最准确。Inter 的 x 高度与思源黑体的中宫大小接近，混排时视觉重量一致，数字 0123456789 与字母 Il1 O0 清晰可辨。</div></div>
+      <div class="row"><small>md 15 / 1.7 / 400</small><div>正文：中文每行 32–42 字时眼跳回扫最准确。IBM Plex Sans 与 Plex Sans SC 出自同一体系，字面大小、笔画粗细、重心一致，混排时不需要任何补偿；数字 0123456789 与字母 Il1 O0 清晰可辨。</div></div>
       <div class="row"><small>sm 13 / 1.6 / mono</small><div style="font-family:var(--font-mono);font-size:13px;line-height:1.6">const port = process.env.PORT ?? 4010; // 0O il1 {}[]()</div></div>
       <div class="row"><small>xs 12 / 1.45 / 400</small><div style="font-size:12px;line-height:1.45;color:var(--text-3)">元信息：14:02 · 用时 48s · 4 个工具 · 来源 3 条</div></div>
-      <div class="note">12px 是下限，只用于元信息；11px 只允许出现在徽标里，不允许组成句子。字重 700 只用于 ≥20px 的标题——小字号的汉字在 700 字重下会糊成一团。</div>
+      <div class="row"><small>pixel 11 / Departure</small><div><span class="px">agent · 14:02 · done · 48s · ctrl+o</span> <span class="muted small">像素字体只排拉丁与数字短标签，原生 11px 网格，整数倍缩放</span></div></div>
+      <div class="note">12px 是下限，只用于元信息；11px 只允许出现在徽标与像素标签里，不允许组成句子。字重 700 只用于 ≥20px 的标题。纯黑主题正文用 Plex 的 Text 字重（450）：亮字在黑底上因光渗显细，用字重补偿而不是放大字号。</div>
     </div>
 
     <div class="card measure-demo">
@@ -428,6 +431,11 @@ run 8790 was deleted by the retention policy (90 days)</div>
       <div class="note">约 8% 的男性有红绿色觉缺陷。模拟后“完成”与“失败”颜色几乎一样，但实心勾 / 实心叉 / 空心圈的形状差异仍然可辨，这就是必须双重编码的原因。</div>
     </div>
     <div class="card">
+      <h3>ANSI 16 色（日志 / 终端输出），由参数生成并校验对比度</h3>
+      <div class="ansi-grid" id="ansiGrid"></div>
+      <div class="note">生成规则与 4bit terminal color scheme designer 相同：6 个色相在 OKLCH 色环上等距（红 25° / 黄 92° / 绿 145° / 青 200° / 蓝 258° / 品红 328°），统一色度，然后用“与背景对比度 = 目标值”反解明度。普通色目标 ≥5.5:1（明亮）/ ≥7.5:1（纯黑），亮色 ≥4.6 / ≥10.5。因此任何一个 ANSI 颜色单独做日志文字都可读，而不是像默认终端配色那样蓝色和暗红在黑底上消失。</div>
+    </div>
+    <div class="card">
       <h3>代码高亮：低饱和、近似等亮度</h3>
       <div class="codeblock"><div class="hd"><span class="lang">ts</span></div><pre><div class="ln"><span>1</span><span><span class="kw">export</span> <span class="kw">async</span> <span class="kw">function</span> <span class="fn">backfill</span>(batch = <span class="num">500</span>) {</span></div><div class="ln"><span>2</span><span>  <span class="cm">// 只高亮 5 类：关键字 / 函数 / 字符串 / 数字 / 注释</span></span></div><div class="ln"><span>3</span><span>  <span class="kw">const</span> rows = <span class="kw">await</span> db.<span class="fn">query</span>(<span class="str">"select id from uploads where storage_key is null limit $1"</span>, [batch]);</span></div><div class="ln"><span>4</span><span>  <span class="kw">return</span> rows.length;</span></div></pre></div>
       <div class="note">高亮的作用是分辨“词性”，不是装饰。5 种颜色是上限；颜色亮度接近，避免某一类词在视野中“跳出来”抢走注意力。</div>
@@ -478,6 +486,221 @@ run 8790 was deleted by the retention policy (90 days)</div>
         <div class="good"><span class="lbl">✓</span><div style="display:flex;gap:8px;flex-wrap:wrap;font-size:12px"><span class="st done"><span class="dot"><svg><use href="#i-done"/></svg></span><code>Read</code></span><span class="st done"><span class="dot"><svg><use href="#i-done"/></svg></span><code>Grep</code></span><span class="st done"><span class="dot"><svg><use href="#i-done"/></svg></span><code>Edit</code></span><span class="st running"><span class="dot"><svg><use href="#i-running"/></svg></span><code>Bash</code></span><span class="st pending"><span class="dot"><svg><use href="#i-pending"/></svg></span><code>Commit</code></span></div></div>
       </div>
       <div class="note">左边用颜色区分“工具种类”，但种类对读者并不重要，而且耗尽了所有色相，真正的错误再也没有颜色可用。右边：工具名用等宽字体（形状区分），颜色只表达状态。</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ====================================================== 推理摘要（进行中） -->
+<section class="scene" data-scene="reasoning">
+  <div class="chat">
+    <div class="turn">
+      <div class="turn-rail"><div class="avatar user"><span class="px accent">U</span></div></div>
+      <div class="turn-body">
+        <div class="turn-head"><b>You</b><span class="t">15:41</span></div>
+        <div class="user-msg">对比一下把上传服务迁到对象存储的三种方案，给我一个推荐。</div>
+      </div>
+    </div>
+    <div class="turn">
+      <div class="turn-rail"><div class="avatar agent"><svg><use href="#i-agent"/></svg></div></div>
+      <div class="turn-body">
+        <div class="turn-head"><b>Agent</b><span class="t">15:41</span></div>
+        <div class="status-line"><span class="st running"><span class="dot"><svg><use href="#i-running"/></svg></span>推理中 · 正在比较成本模型</span><span class="elapsed">00:12</span><button class="stop" type="button"><i></i>停止 <span class="kbd">Esc</span></button></div>
+        <div class="reason">
+          <span class="dot st running"><svg><use href="#i-running"/></svg></span>
+          <div class="lines">
+            <p class="old">三种方案：直写 S3、经网关代理、先落本地再异步上传。先定比较维度。</p>
+            <p class="old">维度：改动量、迁移期间一致性、成本、失败回退。网关代理在一致性上最稳。</p>
+            <p class="cur">成本上直写最低，但要给前端发预签名 URL，改动量最大……<span class="caret"></span></p>
+          </div>
+          <div class="hint"><span><span class="kbd">Ctrl+O</span>展开完整推理</span><span class="px">3 points · 12s</span></div>
+        </div>
+        <div class="prose"><p class="muted small">摘要区固定 3 行：最旧的一行淡出、最新一行全对比度并带光标。推理内容本身不是结论，用 <code>--thinking</code> 降对比；但“正在想什么”必须可见，这是等待期间最有效的安抚。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== 推理展开（Ctrl+O） -->
+<section class="scene" data-scene="reasoning-open">
+  <div class="split">
+    <div class="chat" style="margin:0;max-width:none">
+    <div class="turn">
+      <div class="turn-rail"><div class="avatar user"><span class="px accent">U</span></div></div>
+      <div class="turn-body">
+        <div class="turn-head"><b>You</b><span class="t">15:41</span></div>
+        <div class="user-msg">对比一下把上传服务迁到对象存储的三种方案，给我一个推荐。</div>
+      </div>
+    </div>
+      <div class="turn">
+      <div class="turn-rail"><div class="avatar agent"><svg><use href="#i-agent"/></svg></div></div>
+      <div class="turn-body">
+        <div class="turn-head"><b>Agent</b><span class="t">15:41</span></div>
+        <div class="status-line"><span class="st running"><span class="dot"><svg><use href="#i-running"/></svg></span>推理中 · 正在比较成本模型</span><span class="elapsed">00:12</span><button class="stop" type="button"><i></i>停止 <span class="kbd">Esc</span></button></div>
+        <div class="reason">
+          <span class="dot st running"><svg><use href="#i-running"/></svg></span>
+          <div class="lines">
+            <p class="old">三种方案：直写 S3、经网关代理、先落本地再异步上传。先定比较维度。</p>
+            <p class="old">维度：改动量、迁移期间一致性、成本、失败回退。网关代理在一致性上最稳。</p>
+            <p class="cur">成本上直写最低，但要给前端发预签名 URL，改动量最大……<span class="caret"></span></p>
+          </div>
+          <div class="hint"><span><span class="kbd">Ctrl+O</span>展开完整推理</span><span class="px">3 points · 12s</span></div>
+        </div>
+        <div class="prose"><p class="muted small">按 Ctrl+O 后右侧打开完整推理面板，会话流不动、不换页。面板按时间戳分段，当前段落全对比度，历史段落次级色。再按 Ctrl+O 或 Esc 关闭，回到 3 行摘要。</p></div>
+      </div>
+      </div>
+    </div>
+      <aside class="panel" aria-label="完整推理">
+        <div class="hd"><span class="st running"><span class="dot"><svg><use href="#i-running"/></svg></span></span><span class="px">reasoning · live · 00:12</span><span class="x px">esc 关闭</span></div>
+        <div class="body">
+          <div class="step"><span class="at">00:01</span><div><p>用户要“对比 + 推荐”，所以输出结构应该是：一张对比表 + 一个带理由的推荐，而不是三段各自描述。</p></div></div>
+          <div class="step"><span class="at">00:03</span><div><p>候选方案：① 前端直写 S3（预签名 URL）② 经网关代理转发 ③ 先落本地磁盘再异步上传。</p><p>比较维度：改动量、迁移期间数据一致性、成本、失败回退难度。</p></div></div>
+          <div class="step"><span class="at">00:07</span><div><p>方案 ② 在一致性上最稳：写入路径不变，只换存储后端，双写与校验都在服务端完成。代价是网关带宽成本和一次额外拷贝。</p></div></div>
+          <div class="step cur"><span class="at">00:11</span><div><p>方案 ① 成本最低，但要改前端、改鉴权、处理预签名过期；对现在 23 万条存量数据的回填没有帮助。</p><p>倾向推荐 ②，并把 ① 列为 6 个月后的优化项。还需要确认网关出口带宽的单价……<span class="caret"></span></p></div></div>
+        </div>
+      </aside>
+  </div>
+</section>
+
+<!-- ====================================================== 回复的结果文本 -->
+<section class="scene" data-scene="result">
+  <div class="chat">
+    <div class="turn">
+      <div class="turn-rail"><div class="avatar agent"><svg><use href="#i-agent"/></svg></div></div>
+      <div class="turn-body">
+        <div class="turn-head"><b>Agent</b><span class="t">15:42 · 38s</span></div>
+        <details class="thinking"><summary><svg class="chev"><use href="#i-chev"/></svg><span>推理过程</span><span class="muted">· 12s · 4 段</span><span class="px" style="margin-left:auto">ctrl+o</span></summary></details>
+        <div class="prose">
+          <div class="answer"><div class="k">推荐 <span class="px">answer</span></div>推荐<strong>方案 ②：经网关代理，只换存储后端</strong>。它是唯一不改写入路径的方案，迁移期间的双写和一致性校验都在服务端完成，失败时一键回退。多出的网关带宽成本约每月 ¥1,900，远低于其他两种方案的改造与风险成本。</div>
+
+          <h2>三种方案对比</h2>
+          <table>
+            <thead><tr><th>维度</th><th>① 前端直写 S3</th><th>② 网关代理</th><th>③ 本地落盘再上传</th></tr></thead>
+            <tbody>
+              <tr><td>改动量</td><td>前端 + 鉴权 + 后端，约 18 人日</td><td>仅后端存储层，约 4 人日</td><td>后端 + 新增队列，约 9 人日</td></tr>
+              <tr><td>迁移期一致性</td><td>弱：新旧路径并存</td><td><strong>强</strong>：单一路径双写</td><td>中：队列积压时有窗口</td></tr>
+              <tr><td class="num">月成本增量</td><td class="num">¥ 0</td><td class="num">¥ 1,900</td><td class="num">¥ 650</td></tr>
+              <tr><td>失败回退</td><td>需回滚前端发布</td><td>切换 feature flag</td><td>停消费者即可</td></tr>
+            </tbody>
+          </table>
+
+          <h2>为什么不是成本最低的方案 ①</h2>
+          <p>方案 ① 省下的带宽费每月 ¥1,900，但它要求前端处理预签名 URL 的过期与重试，鉴权逻辑从服务端移到客户端<a class="cite" href="#s1">1</a>。更关键的是，它对现有 23 万条存量文件的回填没有任何帮助，回填仍然要走服务端。</p>
+          <blockquote>一个只优化增量、不解决存量的方案，不适合作为迁移的第一步。</blockquote>
+
+          <h3>建议的推进顺序</h3>
+          <ol>
+            <li><strong>第 1 周</strong>：按方案 ② 接入对象存储，feature flag 默认关闭。</li>
+            <li><strong>第 2 周</strong>：开启双写，后台回填存量，每日校验抽样 1%<a class="cite" href="#s2">2</a>。</li>
+            <li><strong>第 4 周</strong>：读路径切到对象存储，观察 7 天后关闭本地写入。</li>
+            <li><strong>6 个月后</strong>：评估是否把高频大文件改为方案 ① 直写以省带宽。</li>
+          </ol>
+
+          <h3>未验证的假设</h3>
+          <ul>
+            <li><em>推测</em>：网关出口带宽单价按当前合同 ¥0.45/GB 估算，续约价格可能变化。</li>
+            <li><em>未验证</em>：对象存储在华东区的首字节延迟是否满足 200ms 的上传回执要求。</li>
+          </ul>
+
+          <div class="sources"><a id="s1" href="#"><span class="n">1</span>docs/architecture/upload-auth.md</a><a id="s2" href="#"><span class="n">2</span>runbooks/backfill-verification.md</a><a href="#"><span class="n">3</span>billing/2026-09-egress.csv</a></div>
+
+          <div class="next"><div class="k">下一步</div>如果同意方案 ②，我开始写接入 PR，预计 4 人日；第一步只加存储层抽象，不动任何写入逻辑。要开始吗？</div>
+        </div>
+        <div class="settled"><span class="spark">✦</span><span class="px">done · 38s · 3 sources</span></div>
+        <div class="footer-actions"><span>复制</span><span>重新生成</span><span>导出 Markdown</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== 日志 / 终端输出 -->
+<section class="scene" data-scene="terminal">
+  <div class="chat">
+    <div class="turn">
+      <div class="turn-rail"><div class="avatar agent"><svg><use href="#i-agent"/></svg></div></div>
+      <div class="turn-body">
+        <div class="turn-head"><b>Agent</b><span class="t">14:06</span></div>
+        <div class="status-line"><span class="st running"><span class="dot"><svg><use href="#i-running"/></svg></span>运行测试并构建镜像</span><span class="elapsed">01:04</span><button class="stop" type="button"><i></i>停止</button></div>
+        <details class="activity" open>
+          <summary><svg class="chev"><use href="#i-chev"/></svg><span class="st running"><span class="dot"><svg><use href="#i-running"/></svg></span>进行中 · 1 / 2</span><span class="meta">64s</span></summary>
+          <div class="tool running"><span class="dot st running"><svg><use href="#i-running"/></svg></span><div>
+            <div class="intent">运行受影响的测试，输出保留 ANSI 颜色而不是剥掉</div>
+            <div class="call"><code>Bash npx jest --colors api/</code><span class="dur">41s</span></div>
+            <div class="term" style="margin-top:8px">
+              <div class="hd"><span class="px">log · jest</span><span class="px">16 color</span><span class="act"><span class="muted">自动跟随</span><span class="muted">复制</span></span></div>
+<pre><span class="ts">05:41:02.118</span> <span class="a-bgreen a-bold">PASS</span> api/auth.test.ts <span class="a-bblack">(3.1 s)</span>
+<span class="ts">05:41:08.004</span> <span class="a-bgreen a-bold">PASS</span> api/search.test.ts <span class="a-bblack">(4.6 s)</span>
+<span class="ts">05:41:09.330</span> <span class="a-byellow a-bold">RUNS</span> api/upload.test.ts
+<span class="ts">05:41:09.871</span> <span class="a-cyan">info</span>  mock server listening on <span class="a-blue">http://127.0.0.1:4010</span>
+<span class="ts">05:41:11.002</span> <span class="a-cyan">info</span>  <span class="a-magenta">POST</span> /upload <span class="a-green">201</span> 1803ms <span class="a-bblack">size=2.0MB</span>
+<span class="ts">05:41:11.240</span> <span class="a-yellow">warn</span>  <span class="a-magenta">POST</span> /upload <span class="a-yellow">415</span> unsupported mime <span class="a-bblack">image/heic</span>
+<span class="ts">05:41:12.512</span> <span class="a-red a-bold">error</span> <span class="a-magenta">POST</span> /upload <span class="a-red">500</span> ECONNRESET <span class="a-bblack">retry 1/3 in 400ms</span>
+<span class="ts">05:41:12.914</span> <span class="a-cyan">info</span>  <span class="a-magenta">POST</span> /upload <span class="a-green">201</span> 388ms <span class="a-bblack">retry ok</span>
+<span class="ts">05:41:13.000</span> <span class="a-bgreen a-bold">PASS</span> api/upload.test.ts <span class="a-bblack">(12.4 s)</span>
+
+<span class="a-bold">Tests:</span>  <span class="a-bgreen">11 passed</span>, <span class="a-byellow">1 skipped</span>, 12 total
+<span class="a-bold">Time:</span>   20.1 s<span class="caret"></span></pre>
+            </div>
+          </div></div>
+          <div class="tool pending"><span class="dot st pending"><svg><use href="#i-pending"/></svg></span><div><div class="intent muted">构建镜像并推送到灰度仓库</div><div class="call"><code>Bash docker build -t app:canary .</code></div></div></div>
+        </details>
+        <div class="prose">
+          <p class="muted small">日志使用 ANSI 16 色而不是语义色：日志里的“红”来自程序，不一定代表本轮失败，所以它比 <code>--danger</code> 更灰一点、面积更小。时间戳用最低对比的 bright-black，让视线落在级别与路径上。</p>
+          <div class="card" style="margin-top:16px"><h3>当前主题的 16 色与对比度</h3><div class="ansi-grid" id="ansiGrid2"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== 视觉辅助层 -->
+<section class="scene" data-scene="assist">
+  <div class="chat">
+    <div class="vision-note"><span class="px">vision · assist</span> 术后夜视弱 / 色觉缺陷辅助层已开启：正文 16px · 字重 500 · 对比 ≥7:1 · 描边 1.5px · 蓝/橙语义色 · 纹理双编码</div>
+    <div class="turn">
+      <div class="turn-rail"><div class="avatar agent"><svg><use href="#i-agent"/></svg></div></div>
+      <div class="turn-body">
+        <div class="turn-head"><b>Agent</b><span class="t">14:05</span></div>
+        <div class="status-line"><span class="st running"><span class="dot"><svg><use href="#i-running"/></svg></span>正在运行测试</span><span class="elapsed">00:23</span><button class="stop" type="button"><i></i>停止 <span class="kbd">Esc</span></button></div>
+        <div class="prose">
+          <p>状态编码在辅助层里的样子（颜色改为蓝 / 橙 / 黄，亮度差拉大，形状不变）：</p>
+          <div class="statusrow">
+            <span class="st pending"><span class="dot"><svg><use href="#i-pending"/></svg></span>未开始</span>
+            <span class="st running"><span class="dot"><svg><use href="#i-running"/></svg></span>进行中</span>
+            <span class="st done"><span class="dot"><svg><use href="#i-done"/></svg></span>完成</span>
+            <span class="st waiting"><span class="dot"><svg><use href="#i-waiting"/></svg></span>等待人工</span>
+            <span class="st failed"><span class="dot"><svg><use href="#i-failed"/></svg></span>失败</span>
+            <span class="st skipped"><span class="dot"><svg><use href="#i-skipped"/></svg></span>已跳过</span>
+          </div>
+          <div class="statusrow cvd" style="margin-top:8px">
+            <span class="st pending"><span class="dot"><svg><use href="#i-pending"/></svg></span>未开始</span>
+            <span class="st running"><span class="dot"><svg><use href="#i-running"/></svg></span>进行中</span>
+            <span class="st done"><span class="dot"><svg><use href="#i-done"/></svg></span>完成</span>
+            <span class="st waiting"><span class="dot"><svg><use href="#i-waiting"/></svg></span>等待人工</span>
+            <span class="st failed"><span class="dot"><svg><use href="#i-failed"/></svg></span>失败</span>
+            <span class="st skipped"><span class="dot"><svg><use href="#i-skipped"/></svg></span>已跳过</span>
+          </div>
+          <p class="muted small">第二排是绿色盲模拟：蓝与橙在模拟后仍然是两种颜色，亮度也不同。</p>
+
+          <div class="plan">
+            <div class="bar"><i style="width:42%"></i></div>
+            <div class="ph">阶段 2 · 迁移 <span class="n">1 / 4</span></div>
+            <div class="it done"><span class="dot st done"><svg><use href="#i-done"/></svg></span><span class="label">新增 <code>storage_key</code> 列（可空）</span><span class="right">0:37</span></div>
+            <div class="it running"><span class="dot st running"><svg><use href="#i-running"/></svg></span><span class="label">回填历史记录<span class="sub">已处理 96,400 / 230,118</span></span><span class="right">2:48</span></div>
+            <div class="it failed"><span class="dot st failed"><svg><use href="#i-failed"/></svg></span><span class="label">校验抽样一致性<span class="sub">失败：3 条 hash 不一致，已停止</span></span><span class="right">0:12</span></div>
+            <div class="it pending"><span class="dot st pending"><svg><use href="#i-pending"/></svg></span><span class="label">双写 24 小时后校验一致性</span><span class="right"></span></div>
+          </div>
+
+          <p>diff 的增删行除了底色，还加了 4px 实色边条与斜纹（删除行），三重编码在任何色觉下都能分辨：</p>
+          <div class="codeblock diff">
+            <div class="hd"><span class="lang">diff</span><span>api/upload.test.ts</span><span class="act"><span>+1 −1</span></span></div>
+            <pre><div class="ln ctx"><span>42</span><span>    method: <span class="str">"POST"</span>,</span></div><div class="ln del"><span>43</span><span>    body: form,</span></div><div class="ln add"><span>43</span><span>    body: form, keepalive: <span class="kw">false</span>,</span></div><div class="ln ctx"><span>44</span><span>  });</span></div></pre>
+          </div>
+
+          <div class="callout err"><svg class="ic"><use href="#i-err"/></svg><div><div class="t">失败：校验未通过</div>3 条记录的 hash 与源文件不一致。没有数据被修改，回填已暂停在第 96,400 条。</div></div>
+          <div class="callout ok"><svg class="ic"><use href="#i-ok"/></svg><div><div class="t">已完成</div>新增列与索引创建成功，耗时 37s。</div></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
