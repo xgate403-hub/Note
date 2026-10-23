@@ -1,10 +1,14 @@
 /* Agent 会话窗口原型 · 交互与图渲染 */
 (function () {
+  // 参数同时支持 ?query 与 #hash（Artifact / 静态托管下用 hash），hash 优先
   const qs = new URLSearchParams(location.search);
+  new URLSearchParams(location.hash.replace(/^#/, '')).forEach((v, k) => qs.set(k, v));
   const root = document.documentElement;
+  window.addEventListener('hashchange', () => location.reload());
 
   /* ---------- 主题 / 密度 / 场景 ---------- */
-  const theme = qs.get('theme') || localStorage.getItem('theme') || 'light';
+  const sysDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const theme = qs.get('theme') || localStorage.getItem('theme') || (sysDark ? 'dark' : 'light');
   root.dataset.theme = theme;
   if (qs.get('density')) root.dataset.density = qs.get('density');
   const vision = qs.get('vision') || localStorage.getItem('vision') || '';
@@ -14,12 +18,18 @@
 
   const scene = qs.get('scene') || 'overview';
   document.querySelectorAll('.scene').forEach(s => s.classList.toggle('active', s.dataset.scene === scene));
+  const hashFor = (overrides) => {
+    const h = new URLSearchParams();
+    h.set('scene', overrides.scene || scene); h.set('theme', overrides.theme ?? root.dataset.theme);
+    const vis = overrides.vision ?? (root.dataset.vision || ''); if (vis) h.set('vision', vis);
+    return '#' + h.toString();
+  };
   document.querySelectorAll('#nav a').forEach(a => {
-    const sc = new URL(a.href).searchParams.get('scene');
+    const sc = a.dataset.scene;
     a.classList.toggle('on', sc === scene);
-    const u = new URL(a.href); u.searchParams.set('theme', root.dataset.theme); if (root.dataset.vision) u.searchParams.set('vision', root.dataset.vision); a.href = u.toString();
+    a.href = hashFor({ scene: sc });
   });
-  const reload = (k, v) => { localStorage.setItem(k, v); const u = new URL(location.href); if (v) u.searchParams.set(k, v); else u.searchParams.delete(k); location.href = u.toString(); };
+  const reload = (k, v) => { localStorage.setItem(k, v); location.hash = hashFor({ [k]: v }); };
   document.getElementById('visionBtn').onclick = () => reload('vision', root.dataset.vision === 'assist' ? '' : 'assist');
   document.getElementById('themeBtn').onclick = () => reload('theme', root.dataset.theme === 'dark' ? 'light' : 'dark');
   document.getElementById('densityBtn').onclick = () => {

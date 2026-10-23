@@ -14,6 +14,7 @@
 | 组件样式 / 交互与图渲染 | [`demo/demo.css`](demo/demo.css) · [`demo/demo.js`](demo/demo.js) |
 | 字体文件（OFL 授权；中文字体体积大，用脚本获取） | [`demo/fonts/`](demo/fonts/) · [`tools/fetch-fonts.sh`](tools/fetch-fonts.sh) |
 | 截图脚本 / 39 张场景截图 | [`tools/shoot.mjs`](tools/shoot.mjs) · [`screenshots/`](screenshots/) |
+| 在线原型（Artifact，私密，含字体） | https://claude.ai/artifact/FooPTd3AKHCCNHwEfLTyLH |
 
 ---
 
@@ -394,7 +395,7 @@ sh agent-chat-readability/tools/fetch-fonts.sh
 open agent-chat-readability/demo/index.html
 
 # 参数
-?scene=overview|streaming|reasoning|reasoning-open|result|tools|terminal|plan|dag|flow|decision|code|assist|typography|color|antipatterns
+?scene=…（或 #scene=…，Artifact / 静态托管时用 hash）：overview|streaming|reasoning|reasoning-open|result|tools|terminal|plan|dag|flow|decision|code|assist|typography|color|antipatterns
 &theme=light|dark          # 明亮 / 纯黑
 &vision=assist             # 视觉辅助层
 &density=compact           # 紧凑
