@@ -253,7 +253,7 @@ run 8790 was deleted by the retention policy (90 days)</div>
         <div class="turn-head"><b>Agent</b><span class="t">16:01</span></div>
         <div class="status-line"><span class="st running"><span class="dot"><svg><use href="#i-running"/></svg></span>并行执行 2 个任务</span><span class="elapsed">01:37</span><button class="stop" type="button"><i></i>停止</button></div>
         <div class="prose">
-          <p>发布流程有依赖关系，用图比清单清楚。从左到右按层排列，已完成的边是实线绿色，当前活动路径加粗，未开始的是虚线：</p>
+          <p>发布流程有依赖关系，用图比清单清楚。从左到右按层排列：已走过的边是深灰实线，当前路径是主色，未开始的是虚线。节点一律白底，状态只看左上角的小图标：</p>
           <div class="graph" id="dag1"></div>
           <p class="muted small">图下方始终附带文字版（可复制、可读屏），图只是加速理解，不是唯一信息源：</p>
           <ol class="small">
@@ -275,7 +275,7 @@ run 8790 was deleted by the retention policy (90 days)</div>
         <div class="prose">
           <p>这是我处理每条告警的判断流程，蓝色 ▶ 标记是<strong>当前所在位置</strong>。决策节点用菱形、动作用圆角矩形，Yes/No 永远标在边上而不是节点里：</p>
           <div class="graph" id="flow1"></div>
-          <p class="muted small">规则：流程 ≤ 12 个节点；超过就拆分成子流程并折叠。文字一律水平，不旋转。</p>
+          <p class="muted small">规则：流程 ≤ 12 个节点；超过就拆分成子流程并折叠。文字一律水平，不旋转。图里唯一的颜色是当前路径。</p>
         </div>
       </div>
     </div>

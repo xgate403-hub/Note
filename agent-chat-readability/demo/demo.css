@@ -215,37 +215,38 @@ body.capture .skeleton{animation:none}
 .next{border-top:var(--hairline) solid var(--border);padding-top:var(--space-3);margin-top:var(--space-5)!important}
 .next .k{font-size:var(--fs-xs);color:var(--text-3);font-weight:var(--fw-semibold);letter-spacing:.04em;margin-bottom:4px}
 
-/* ---------- 图：DAG / 流程 ---------- */
-.graph{border:var(--hairline) solid var(--border);border-radius:var(--radius-md);background:var(--surface);padding:var(--space-3);overflow:auto}
+/* ---------- 图：DAG / 流程 ----------
+   单色方案：节点一律白底 + 细灰边，状态只靠小图标；唯一的颜色是“当前路径”的主色。
+   边三档：已走过 = 深灰实线，当前 = 主色实线略粗，未来 = 浅灰虚线。 */
+.graph{border:var(--hairline) solid var(--border);border-radius:var(--radius-md);background:var(--surface);padding:var(--space-4) var(--space-3) var(--space-3);overflow:auto}
 .graph>svg{display:block;max-width:100%;height:auto;font-family:var(--font-sans)}
-.graph .cap{font-size:var(--fs-xs);color:var(--text-3);margin-top:var(--space-2);display:flex;gap:var(--space-4);flex-wrap:wrap}
-.g-node rect{fill:var(--surface);stroke:var(--border-strong);stroke-width:1.2}
-.g-node text{fill:var(--text);font-size:12.5px}
-.g-node .sub{fill:var(--text-3);font-size:11px;font-family:var(--font-mono)}
-.g-node.done rect{stroke:var(--success);fill:var(--success-bg)}
-.g-node.done text{fill:var(--text-2)}
-.g-node.running rect{stroke:var(--accent);stroke-width:2;fill:var(--accent-bg)}
-.g-node.running text{font-weight:600}
-.g-node.failed rect{stroke:var(--danger);fill:var(--danger-bg)}
-.g-node.pending rect{stroke-dasharray:4 3;fill:var(--surface)}
-.g-node.pending text{fill:var(--text-2)}
-.g-node.waiting rect{stroke:var(--warning);fill:var(--warning-bg)}
-.g-node .ic{width:11px;height:11px}
-.g-node.done .ic{color:var(--success)} .g-node.running .ic{color:var(--accent)} .g-node.pending .ic{color:var(--text-3)} .g-node.failed .ic{color:var(--danger)} .g-node.waiting .ic{color:var(--warning)} .g-node.skipped .ic{color:var(--text-3)}
+.graph .cap{font-size:var(--fs-xs);color:var(--text-3);margin-top:var(--space-3);display:flex;gap:var(--space-4);flex-wrap:wrap;padding-top:var(--space-2);border-top:1px dashed var(--border)}
 .graph .cap .st{font-size:var(--fs-xs);color:var(--text-3)}
 .graph .cap .st .dot{color:inherit}
-.graph .cap .st.done .dot{color:var(--success)} .graph .cap .st.running .dot{color:var(--accent)} .graph .cap .st.waiting .dot{color:var(--warning)} .graph .cap .st.failed .dot{color:var(--danger)}
-.g-node.skipped rect{stroke:var(--border);fill:var(--surface-2)} .g-node.skipped text{fill:var(--text-3)}
-.g-edge{fill:none;stroke:var(--border-strong);stroke-width:1.4}
-.g-edge.done{stroke:var(--success)}
-.g-edge.active{stroke:var(--accent);stroke-width:2}
-.g-edge.pending{stroke-dasharray:4 3;stroke:var(--border-strong)}
-.g-lane{fill:var(--text-3);font-size:11px;letter-spacing:.04em}
-.g-lanebg{fill:var(--surface-2);opacity:.6}
-.g-dec polygon{fill:var(--warning-bg);stroke:var(--warning);stroke-width:1.2}
+.graph .cap .st.done .dot{color:var(--text-2)} .graph .cap .st.running .dot{color:var(--accent)} .graph .cap .st.waiting .dot{color:var(--warning)} .graph .cap .st.failed .dot{color:var(--danger)}
+.g-node rect{fill:var(--surface);stroke:var(--border-strong);stroke-width:1}
+.g-node text{fill:var(--text);font-size:12.5px}
+.g-node .sub{fill:var(--text-3);font-size:10.5px;font-family:var(--font-mono)}
+.g-node .ic{width:11px;height:11px}
+.g-node.done rect{stroke:var(--border-strong)}
+.g-node.done text{fill:var(--text-2)} .g-node.done .ic{color:var(--text-2)}
+.g-node.running rect{stroke:var(--accent);stroke-width:1.5;fill:var(--accent-bg)}
+.g-node.running text{font-weight:600} .g-node.running .ic{color:var(--accent)}
+.g-node.failed rect{stroke:var(--danger)} .g-node.failed .ic{color:var(--danger)}
+.g-node.pending rect{stroke-dasharray:3 3;stroke:var(--border-strong)}
+.g-node.pending text{fill:var(--text-3)} .g-node.pending .ic{color:var(--text-4)}
+.g-node.waiting rect{stroke:var(--warning)} .g-node.waiting .ic{color:var(--warning)}
+.g-node.skipped rect{stroke:var(--border)} .g-node.skipped text{fill:var(--text-4)} .g-node.skipped .ic{color:var(--text-4)}
+.g-edge{fill:none;stroke:var(--border-strong);stroke-width:1.2}
+.g-edge.done{stroke:var(--text-3)}
+.g-edge.active{stroke:var(--accent);stroke-width:1.8}
+.g-edge.pending{stroke-dasharray:3 3;stroke:var(--border-strong)}
+.g-lane{fill:var(--text-3);font-size:10.5px;letter-spacing:.06em;font-family:var(--font-pixel)}
+.g-laneline{stroke:var(--border);stroke-width:1}
+.g-dec polygon{fill:var(--surface);stroke:var(--border-strong);stroke-width:1}
 .g-dec text{fill:var(--text);font-size:12.5px}
 .g-lbl{fill:var(--text-3);font-size:11px}
-.g-here circle{fill:var(--accent)} .g-here text{fill:var(--bg);font-size:10px;font-weight:700}
+.g-here circle{fill:var(--accent)} .g-here text{fill:var(--bg);font-size:9px;font-weight:700}
 
 /* ---------- 样本 / 规范页 ---------- */
 .spec{display:grid;gap:var(--space-5)}

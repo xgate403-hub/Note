@@ -76,7 +76,7 @@
 
   /* ---------- DAG：按层从左到右（简化 Sugiyama） ---------- */
   function renderDag(host, nodes, edges, lanes) {
-    const W = 108, H = 44, GX = 56, GY = 18, PAD = 16, LANE = lanes ? 22 : 0;
+    const W = 112, H = 44, GX = 60, GY = 18, PAD = 16, LANE = lanes ? 26 : 0;
     const byLayer = {};
     nodes.forEach(n => (byLayer[n.layer] ||= []).push(n));
     const layers = Object.keys(byLayer).map(Number).sort((a, b) => a - b);
@@ -95,12 +95,12 @@
       const x1 = A.x + W, y1 = A.y + H / 2, x2 = B.x, y2 = B.y + H / 2, c = (x2 - x1) / 2;
       const p = el('path', { d: `M${x1},${y1} C${x1 + c},${y1} ${x2 - c},${y2} ${x2},${y2}`, class: 'g-edge ' + (st || '') });
       svg.appendChild(p);
-      svg.appendChild(el('path', { d: `M${x2 - 5},${y2 - 3.5} L${x2},${y2} L${x2 - 5},${y2 + 3.5}`, class: 'g-edge ' + (st || ''), 'stroke-dasharray': '0' }));
+      svg.appendChild(el('path', { d: `M${x2 - 4},${y2 - 3} L${x2},${y2} L${x2 - 4},${y2 + 3}`, class: 'g-edge ' + (st || ''), 'stroke-dasharray': '0' }));
     });
     nodes.forEach(n => {
       const g = el('g', { class: 'g-node ' + n.state, transform: `translate(${n.x},${n.y})` });
       g.appendChild(el('title', {}, `${n.label} · ${n.state}`));
-      g.appendChild(el('rect', { width: W, height: H, rx: 8 }));
+      g.appendChild(el('rect', { width: W, height: H, rx: 6 }));
       g.appendChild(useIcon(n.state, 10, n.sub ? 10 : 17));
       g.appendChild(el('text', { x: 26, y: n.sub ? 19 : 26 }, n.label));
       if (n.sub) g.appendChild(el('text', { x: 12, y: 34, class: 'sub' }, n.sub));
@@ -108,8 +108,8 @@
     });
     if (lanes) lanes.forEach(([label, from, to]) => {
       const x = PAD + from * (W + GX), w = (to - from + 1) * W + (to - from) * GX;
-      svg.insertBefore(el('rect', { x: x - 8, y: PAD + 2, width: w + 16, height: LANE - 6, rx: 4, class: 'g-lanebg' }), svg.firstChild);
-      svg.appendChild(el('text', { x, y: PAD + 13, class: 'g-lane' }, label));
+      svg.appendChild(el('text', { x, y: PAD + 9, class: 'g-lane' }, label.toUpperCase()));
+      svg.appendChild(el('line', { x1: x, y1: PAD + 15, x2: x + w, y2: PAD + 15, class: 'g-laneline' }));
     });
     host.appendChild(svg);
     const cap = document.createElement('div'); cap.className = 'cap';
@@ -131,7 +131,7 @@
   ], [
     ['co', 'dep', 'done'], ['dep', 'unit', 'active'], ['dep', 'img', 'active'], ['dep', 'lint', 'done'],
     ['unit', 'int', 'pending'], ['img', 'int', 'pending'], ['lint', 'canary', 'pending'], ['int', 'appr', 'pending'], ['appr', 'canary', 'pending'], ['canary', 'prod', 'pending'],
-  ], [['构建', 0, 2], ['验证', 3, 4], ['发布', 5, 6]]);
+  ], [['build', 0, 2], ['verify', 3, 4], ['release', 5, 6]]);
 
   /* ---------- 流程图：自上而下，菱形决策 ---------- */
   function renderFlow(host) {
@@ -139,9 +139,9 @@
     const svg = el('svg', { viewBox: `0 0 ${width} ${height}`, width, height, role: 'img', 'aria-label': '告警处理流程' });
     const box = (x, y, w, h, label, state, here) => {
       const g = el('g', { class: 'g-node ' + state, transform: `translate(${x},${y})` });
-      g.appendChild(el('rect', { width: w, height: h, rx: 8 }));
+      g.appendChild(el('rect', { width: w, height: h, rx: 6 }));
       g.appendChild(el('text', { x: w / 2, y: h / 2 + 4.5, 'text-anchor': 'middle' }, label));
-      if (here) { const hh = el('g', { class: 'g-here', transform: `translate(${w - 2},${-2})` }); hh.appendChild(el('circle', { r: 9 })); hh.appendChild(el('text', { 'text-anchor': 'middle', y: 3.5 }, '▶')); g.appendChild(hh); }
+      if (here) { const hh = el('g', { class: 'g-here', transform: `translate(${w - 2},${-2})` }); hh.appendChild(el('circle', { r: 8 })); hh.appendChild(el('text', { 'text-anchor': 'middle', y: 3.5 }, '▶')); g.appendChild(hh); }
       svg.appendChild(g); return { x, y, w, h };
     };
     const dec = (cx, cy, label) => {
@@ -173,7 +173,7 @@
     line(`M${cx},330 L${cx},360 L${cx + 130},360`, 'pending');
     host.appendChild(svg);
     const cap = document.createElement('div'); cap.className = 'cap';
-    cap.innerHTML = '<span>菱形 = 判断</span><span>圆角矩形 = 动作</span><span>绿实线 = 已走过</span><span>蓝粗线 = 当前路径</span><span>虚线 = 未来可能路径</span>';
+    cap.innerHTML = '<span>菱形 = 判断</span><span>圆角矩形 = 动作</span><span>深灰实线 = 已走过</span><span>主色线 = 当前路径</span><span>虚线 = 未来可能路径</span>';
     host.appendChild(cap);
   }
   const flow = document.getElementById('flow1');
