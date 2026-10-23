@@ -222,7 +222,7 @@ body.capture .skeleton{animation:none}
 .g-node rect{fill:var(--surface);stroke:var(--border-strong);stroke-width:1.2}
 .g-node text{fill:var(--text);font-size:12.5px}
 .g-node .sub{fill:var(--text-3);font-size:11px;font-family:var(--font-mono)}
-.g-node.done rect{stroke:var(--success);fill:var(--surface)}
+.g-node.done rect{stroke:var(--success);fill:var(--success-bg)}
 .g-node.done text{fill:var(--text-2)}
 .g-node.running rect{stroke:var(--accent);stroke-width:2;fill:var(--accent-bg)}
 .g-node.running text{font-weight:600}
@@ -232,7 +232,9 @@ body.capture .skeleton{animation:none}
 .g-node.waiting rect{stroke:var(--warning);fill:var(--warning-bg)}
 .g-node .ic{width:11px;height:11px}
 .g-node.done .ic{color:var(--success)} .g-node.running .ic{color:var(--accent)} .g-node.pending .ic{color:var(--text-3)} .g-node.failed .ic{color:var(--danger)} .g-node.waiting .ic{color:var(--warning)} .g-node.skipped .ic{color:var(--text-3)}
-.graph .cap .st{font-size:var(--fs-xs)}
+.graph .cap .st{font-size:var(--fs-xs);color:var(--text-3)}
+.graph .cap .st .dot{color:inherit}
+.graph .cap .st.done .dot{color:var(--success)} .graph .cap .st.running .dot{color:var(--accent)} .graph .cap .st.waiting .dot{color:var(--warning)} .graph .cap .st.failed .dot{color:var(--danger)}
 .g-node.skipped rect{stroke:var(--border);fill:var(--surface-2)} .g-node.skipped text{fill:var(--text-3)}
 .g-edge{fill:none;stroke:var(--border-strong);stroke-width:1.4}
 .g-edge.done{stroke:var(--success)}
