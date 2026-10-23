@@ -51,8 +51,8 @@ const check = (label, fg, bg, min) => report.push([label, fg, bg, cr(fg, bg), mi
   const fixed = { '--bg': bg, '--surface': '#FFFFFF', '--surface-2': '#F0EFEB', '--surface-3': '#E7E6E1', '--border': '#DCDAD3', '--border-strong': '#BFBDB6', '--text': '#1F2126', '--text-2': '#4D525B', '--text-3': '#676D77', '--text-4': '#838891' };
   for (const k in fixed) line(k, fixed[k]);
   ['--text', 7].concat() && check('text', fixed['--text'], bg, 7); check('text-2', fixed['--text-2'], bg, 4.5); check('text-3', fixed['--text-3'], bg, 4.5); check('text-4', fixed['--text-4'], bg, 3);
-  for (const [k, h, C, t] of [['accent', HUE.accent, .14, 5.3], ['success', HUE.success, .10, 5.0], ['warning', HUE.warning, .11, 5.0], ['danger', HUE.danger, .14, 5.0]]) {
-    const fg = solve(bg, h, C, t, 'darker'); const bgc = oklch(0.955, 0.03, h); const ln = oklch(0.80, 0.09, h);
+  for (const [k, h, C, t] of [['accent', HUE.accent, .09, 5.3], ['success', HUE.success, .07, 5.0], ['warning', HUE.warning, .08, 5.0], ['danger', HUE.danger, .09, 5.0]]) {
+    const fg = solve(bg, h, C, t, 'darker'); const bgc = oklch(0.962, 0.018, h); const ln = oklch(0.82, 0.05, h);
     line(`--${k}`, fg); line(`--${k}-bg`, bgc); line(`--${k}-line`, ln);
     check(k, fg, bg, 4.5); check(`${k} on ${k}-bg`, fg, bgc, 4.5);
   }
@@ -60,14 +60,15 @@ const check = (label, fg, bg, min) => report.push([label, fg, bg, cr(fg, bg), mi
   line('--thinking', '#5D636D'); line('--thinking-bg', '#F1F0EC'); check('thinking', '#5D636D', '#F1F0EC', 4.5);
   line('--code-bg', '#F1F0EC');
   const codebg = '#F1F0EC';
-  for (const [k, h, C, t] of [['kw', 300, .12, 5.2], ['fn', 258, .12, 5.2], ['str', 160, .10, 5.2], ['num', 60, .12, 5.2]]) { const c = solve(codebg, h, C, t, 'darker'); line(`--code-${k}`, c); check(`code-${k}`, c, codebg, 4.5); }
+  for (const [k, h, C, t] of [['kw', 300, .08, 5.2], ['str', 165, .07, 5.2]]) { const c = solve(codebg, h, C, t, 'darker'); line(`--code-${k}`, c); check(`code-${k}`, c, codebg, 4.5); }
+  line('--code-fn', 'var(--text)'); line('--code-num', 'var(--text-2)');
   line('--code-cm', '#646A74'); check('code-cm', '#646A74', codebg, 4.5);
-  line('--diff-add-bg', oklch(0.95, 0.04, HUE.success)); line('--diff-add-fg', 'var(--success)'); line('--diff-del-bg', oklch(0.95, 0.03, HUE.danger)); line('--diff-del-fg', 'var(--danger)');
-  // 独角兽点缀：三色低饱和渐变，只用于 1–2px 发丝线与头像
-  line('--uni-1', oklch(0.80, 0.09, HUE.accent)); line('--uni-2', oklch(0.85, 0.07, HUE.unicornMint)); line('--uni-3', oklch(0.87, 0.06, HUE.unicornPeach));
+  line('--diff-add-bg', oklch(0.955, 0.025, HUE.success)); line('--diff-add-fg', 'var(--success)'); line('--diff-del-bg', oklch(0.955, 0.02, HUE.danger)); line('--diff-del-fg', 'var(--danger)');
+  // 独角兽点缀：只用于 Agent 头像底色，近灰的极低色度三色
+  line('--uni-1', oklch(0.90, 0.025, HUE.accent)); line('--uni-2', oklch(0.92, 0.02, HUE.unicornMint)); line('--uni-3', oklch(0.93, 0.02, HUE.unicornPeach));
   // ANSI 16 色（日志用）：普通色对比 ≥5.5，亮色 ≥4.6
   const ansi = { black: '#2B2D32', 'bright-black': '#5C6068', white: solve(bg, 260, .01, 4.7, 'darker'), 'bright-white': solve(bg, 260, .01, 3.2, 'darker') };
-  for (const k in ANSI_HUE) { ansi[k] = solve(bg, ANSI_HUE[k], .13, 5.6, 'darker'); ansi['bright-' + k] = solve(bg, ANSI_HUE[k], .15, 4.6, 'darker'); }
+  for (const k in ANSI_HUE) { ansi[k] = solve(bg, ANSI_HUE[k], .10, 5.6, 'darker'); ansi['bright-' + k] = solve(bg, ANSI_HUE[k], .11, 4.6, 'darker'); }
   for (const k in ansi) { line(`--ansi-${k}`, ansi[k]); check(`ansi-${k}`, ansi[k], bg, k.startsWith('bright-white') ? 3 : 4.5); }
   out.push('}');
 }
@@ -80,20 +81,21 @@ const check = (label, fg, bg, min) => report.push([label, fg, bg, cr(fg, bg), mi
   const fixed = { '--bg': bg, '--surface': '#0D0D0F', '--surface-2': '#151518', '--surface-3': '#1D1D21', '--border': '#26262B', '--border-strong': '#3B3B42', '--text': '#E2E0DA', '--text-2': '#A6A8AD', '--text-3': '#7F828A', '--text-4': '#5E6168' };
   for (const k in fixed) line(k, fixed[k]);
   check('text', fixed['--text'], bg, 7); check('text-2', fixed['--text-2'], bg, 4.5); check('text-3', fixed['--text-3'], bg, 4.5); check('text-4', fixed['--text-4'], bg, 3);
-  for (const [k, h, C, t] of [['accent', HUE.accent, .11, 8.5], ['success', HUE.success, .10, 8.5], ['warning', HUE.warning, .11, 10], ['danger', HUE.danger, .12, 7.5]]) {
-    const fg = solve(bg, h, C, t, 'lighter'); const bgc = oklch(0.22, 0.04, h); const ln = oklch(0.42, 0.08, h);
+  for (const [k, h, C, t] of [['accent', HUE.accent, .08, 8.5], ['success', HUE.success, .07, 8.5], ['warning', HUE.warning, .08, 10], ['danger', HUE.danger, .08, 7.5]]) {
+    const fg = solve(bg, h, C, t, 'lighter'); const bgc = oklch(0.20, 0.02, h); const ln = oklch(0.40, 0.05, h);
     line(`--${k}`, fg); line(`--${k}-bg`, bgc); line(`--${k}-line`, ln);
     check(k, fg, bg, 4.5); check(`${k} on ${k}-bg`, fg, bgc, 4.5);
   }
   line('--running', 'var(--accent)'); line('--neutral', fixed['--text-3']);
   line('--thinking', '#999CA3'); line('--thinking-bg', '#0A0A0C'); check('thinking', '#999CA3', '#0A0A0C', 4.5);
   const codebg = '#101013'; line('--code-bg', codebg);
-  for (const [k, h, C, t] of [['kw', 300, .10, 7.5], ['fn', 250, .10, 7.5], ['str', 160, .09, 8.5], ['num', 70, .10, 9]]) { const c = solve(codebg, h, C, t, 'lighter'); line(`--code-${k}`, c); check(`code-${k}`, c, codebg, 4.5); }
+  for (const [k, h, C, t] of [['kw', 300, .07, 7.5], ['str', 165, .06, 8.5]]) { const c = solve(codebg, h, C, t, 'lighter'); line(`--code-${k}`, c); check(`code-${k}`, c, codebg, 4.5); }
+  line('--code-fn', 'var(--text)'); line('--code-num', 'var(--text-2)');
   line('--code-cm', '#7E838B'); check('code-cm', '#7E838B', codebg, 4.5);
-  line('--diff-add-bg', oklch(0.24, 0.04, HUE.success)); line('--diff-add-fg', 'var(--success)'); line('--diff-del-bg', oklch(0.24, 0.04, HUE.danger)); line('--diff-del-fg', 'var(--danger)');
-  line('--uni-1', oklch(0.72, 0.10, HUE.accent)); line('--uni-2', oklch(0.78, 0.08, HUE.unicornMint)); line('--uni-3', oklch(0.80, 0.07, HUE.unicornPeach));
+  line('--diff-add-bg', oklch(0.22, 0.025, HUE.success)); line('--diff-add-fg', 'var(--success)'); line('--diff-del-bg', oklch(0.22, 0.02, HUE.danger)); line('--diff-del-fg', 'var(--danger)');
+  line('--uni-1', oklch(0.30, 0.025, HUE.accent)); line('--uni-2', oklch(0.32, 0.02, HUE.unicornMint)); line('--uni-3', oklch(0.33, 0.02, HUE.unicornPeach));
   const ansi = { black: '#1C1C20', 'bright-black': '#7C7F87', white: '#CFCDC7', 'bright-white': '#EFEDE7' };
-  for (const k in ANSI_HUE) { ansi[k] = solve(bg, ANSI_HUE[k], .11, 7.5, 'lighter'); ansi['bright-' + k] = solve(bg, ANSI_HUE[k], .12, 10.5, 'lighter'); }
+  for (const k in ANSI_HUE) { ansi[k] = solve(bg, ANSI_HUE[k], .085, 7.5, 'lighter'); ansi['bright-' + k] = solve(bg, ANSI_HUE[k], .095, 10.5, 'lighter'); }
   for (const k in ansi) { line(`--ansi-${k}`, ansi[k]); check(`ansi-${k}`, ansi[k], bg, k === 'black' ? 0 : 4.5); }
   out.push('}');
 }
@@ -110,7 +112,7 @@ const check = (label, fg, bg, min) => report.push([label, fg, bg, cr(fg, bg), mi
   check('A text', fixed['--text'], bg, 10); check('A text-2', fixed['--text-2'], bg, 7); check('A text-3', fixed['--text-3'], bg, 7); check('A text-4', fixed['--text-4'], bg, 4.5);
   // 语义：完成=蓝 / 失败=朱红橙 / 等待=深黄 / 进行中=紫（与蓝靠亮度与形状区分）
   for (const [k, h, C, t] of [['accent', 300, .14, 7.9], ['success', 245, .13, 7.9], ['warning', 85, .12, 7.9], ['danger', 40, .16, 7.9]]) {
-    const fg = solve(bg, h, C, t, 'darker'); const bgc = oklch(0.95, 0.035, h); const ln = oklch(0.70, 0.11, h);
+    const fg = solve(bg, h, C, t, 'darker'); const bgc = oklch(0.955, 0.025, h); const ln = oklch(0.70, 0.10, h);
     line(`--${k}`, fg); line(`--${k}-bg`, bgc); line(`--${k}-line`, ln); check('A ' + k, fg, bg, 7); check(`A ${k} on bg`, fg, bgc, 7);
   }
   line('--thinking', '#3F444C'); line('--thinking-bg', '#EEEDE8'); line('--code-bg', '#EEEDE8');
@@ -125,7 +127,7 @@ const check = (label, fg, bg, min) => report.push([label, fg, bg, cr(fg, bg), mi
   for (const k in fixed) line(k, fixed[k]);
   check('A text', fixed['--text'], bg, 10); check('A text-2', fixed['--text-2'], bg, 7); check('A text-3', fixed['--text-3'], bg, 7); check('A text-4', fixed['--text-4'], bg, 4.5);
   for (const [k, h, C, t] of [['accent', 300, .10, 9.3], ['success', 215, .10, 9.4], ['warning', 90, .11, 12], ['danger', 45, .13, 9.3]]) {
-    const fg = solve(bg, h, C, t, 'lighter'); const bgc = oklch(0.28, 0.04, h); const ln = oklch(0.55, 0.09, h);
+    const fg = solve(bg, h, C, t, 'lighter'); const bgc = oklch(0.27, 0.03, h); const ln = oklch(0.55, 0.08, h);
     line(`--${k}`, fg); line(`--${k}-bg`, bgc); line(`--${k}-line`, ln); check('A ' + k, fg, bg, 7); check(`A ${k} on bg`, fg, bgc, 7);
   }
   line('--thinking', '#C0C3C9'); line('--thinking-bg', '#17181C'); line('--code-bg', '#1A1B1F');

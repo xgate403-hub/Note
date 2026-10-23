@@ -436,9 +436,9 @@ run 8790 was deleted by the retention policy (90 days)</div>
       <div class="note">生成规则与 4bit terminal color scheme designer 相同：6 个色相在 OKLCH 色环上等距（红 25° / 黄 92° / 绿 145° / 青 200° / 蓝 258° / 品红 328°），统一色度，然后用“与背景对比度 = 目标值”反解明度。普通色目标 ≥5.5:1（明亮）/ ≥7.5:1（纯黑），亮色 ≥4.6 / ≥10.5。因此任何一个 ANSI 颜色单独做日志文字都可读，而不是像默认终端配色那样蓝色和暗红在黑底上消失。</div>
     </div>
     <div class="card">
-      <h3>代码高亮：低饱和、近似等亮度</h3>
-      <div class="codeblock"><div class="hd"><span class="lang">ts</span></div><pre><div class="ln"><span>1</span><span><span class="kw">export</span> <span class="kw">async</span> <span class="kw">function</span> <span class="fn">backfill</span>(batch = <span class="num">500</span>) {</span></div><div class="ln"><span>2</span><span>  <span class="cm">// 只高亮 5 类：关键字 / 函数 / 字符串 / 数字 / 注释</span></span></div><div class="ln"><span>3</span><span>  <span class="kw">const</span> rows = <span class="kw">await</span> db.<span class="fn">query</span>(<span class="str">"select id from uploads where storage_key is null limit $1"</span>, [batch]);</span></div><div class="ln"><span>4</span><span>  <span class="kw">return</span> rows.length;</span></div></pre></div>
-      <div class="note">高亮的作用是分辨“词性”，不是装饰。5 种颜色是上限；颜色亮度接近，避免某一类词在视野中“跳出来”抢走注意力。</div>
+      <h3>代码高亮：3 类上色、低饱和、近似等亮度</h3>
+      <div class="codeblock"><div class="hd"><span class="lang">ts</span></div><pre><div class="ln"><span>1</span><span><span class="kw">export</span> <span class="kw">async</span> <span class="kw">function</span> <span class="fn">backfill</span>(batch = <span class="num">500</span>) {</span></div><div class="ln"><span>2</span><span>  <span class="cm">// 只高亮 3 类：关键字 / 字符串 / 注释</span></span></div><div class="ln"><span>3</span><span>  <span class="kw">const</span> rows = <span class="kw">await</span> db.<span class="fn">query</span>(<span class="str">"select id from uploads where storage_key is null limit $1"</span>, [batch]);</span></div><div class="ln"><span>4</span><span>  <span class="kw">return</span> rows.length;</span></div></pre></div>
+      <div class="note">高亮的作用是分辨“词性”，不是装饰。只给 3 类上色：关键字（灰紫）、字符串（灰青）、注释（灰）；函数名与数字用正文色。颜色亮度接近，没有一类词会从视野里“跳出来”。</div>
     </div>
   </div>
 </section>
@@ -579,7 +579,7 @@ run 8790 was deleted by the retention policy (90 days)</div>
             <tbody>
               <tr><td>改动量</td><td>前端 + 鉴权 + 后端，约 18 人日</td><td>仅后端存储层，约 4 人日</td><td>后端 + 新增队列，约 9 人日</td></tr>
               <tr><td>迁移期一致性</td><td>弱：新旧路径并存</td><td><strong>强</strong>：单一路径双写</td><td>中：队列积压时有窗口</td></tr>
-              <tr><td class="num">月成本增量</td><td class="num">¥ 0</td><td class="num">¥ 1,900</td><td class="num">¥ 650</td></tr>
+              <tr><td>月成本增量</td><td class="num">¥ 0</td><td class="num">¥ 1,900</td><td class="num">¥ 650</td></tr>
               <tr><td>失败回退</td><td>需回滚前端发布</td><td>切换 feature flag</td><td>停消费者即可</td></tr>
             </tbody>
           </table>
