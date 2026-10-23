@@ -1,0 +1,227 @@
+/* =====================================================================
+   Agent 会话窗口 · 设计令牌 (Design Tokens)
+   目标：长文本阅读、中西文混排、流式输出、明暗双主题、色觉友好
+   用法：引入本文件后，组件只允许引用 var(--xxx)，禁止写死颜色/字号
+   ===================================================================== */
+
+:root {
+  color-scheme: light dark;
+
+  /* ---------- 1. 字体族 ----------
+     Latin 优先、CJK 回落：拉丁字母与数字用 Inter（x 高度大、数字清晰），
+     汉字回落到思源黑体/苹方/雅黑。等宽字体使用 JetBrains Mono，
+     0/O、1/l/I 可区分，字宽 0.6em，便于对齐。 */
+  --font-sans: "Inter", "Noto Sans SC", "PingFang SC", "HarmonyOS Sans SC",
+               "Microsoft YaHei", "Source Han Sans SC", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", "Cascadia Mono", "Consolas",
+               "Noto Sans Mono CJK SC", ui-monospace, monospace;
+
+  /* ---------- 2. 字号阶梯 (px) ----------
+     基准 15px：中文在 15–16px 时笔画完整、阅读速度最高；
+     任何可读文本不得小于 12px；等宽文本比正文小 1–2px 以匹配视觉密度 */
+  --fs-2xs: 11px;   /* 仅用于徽标、角标，不承载句子 */
+  --fs-xs:  12px;   /* 元信息：时间、耗时、来源 */
+  --fs-sm:  13px;   /* 代码、工具参数、次级说明 */
+  --fs-md:  15px;   /* 正文 */
+  --fs-lg:  17px;   /* 消息内三级标题 / 强调句 */
+  --fs-xl:  20px;   /* 消息内二级标题 */
+  --fs-2xl: 24px;   /* 页面/会话标题 */
+
+  /* ---------- 3. 行高 ----------
+     CJK 笔画密、无升降部，需要比拉丁文更大的行距；
+     行距 (1.7) 与段距 (0.9em) 必须拉开差距，让“段”成为可感知的块 */
+  --lh-tight: 1.3;   /* 标题 */
+  --lh-ui:    1.45;  /* 按钮、徽标、单行 UI */
+  --lh-code:  1.6;   /* 代码 */
+  --lh-body:  1.7;   /* 中文正文 */
+  --para-gap: 0.9em;
+
+  /* ---------- 4. 字重 ----------
+     正文 400；强调 600；700 只用于 ≥20px 的标题（小字号下汉字会糊成团） */
+  --fw-regular: 400;
+  --fw-medium:  500;
+  --fw-semibold: 600;
+  --fw-bold:    700;
+
+  /* ---------- 5. 行长 (measure) ----------
+     中文每行 32–42 字最佳；15px × 42 ≈ 630px，加上中西混排留 680px */
+  --measure: 680px;
+  --measure-narrow: 560px;
+
+  /* ---------- 6. 间距阶梯 ----------
+     4px 基数；轮次之间 (--space-7) 必须明显大于消息内部 (--space-3/4) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 48px;
+
+  /* ---------- 7. 圆角 / 描边 ---------- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --hairline: 1px;
+
+  /* ---------- 8. 动效 ----------
+     只允许一个“活”的元素在周边视野中运动；呼吸周期 ≥1.2s；光标 1Hz */
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --dur-slow: 400ms;
+  --ease: cubic-bezier(.2,.6,.2,1);
+
+  /* ---------- 9. 色彩：浅色主题 ----------
+     背景不用纯白（减少眩光），文字不用纯黑（降低边缘抖动感）。
+     对比度：正文 ≥ 7:1 (AAA)，次级 ≥ 4.5:1，三级/占位 ≥ 3:1。
+     色相只分配给“语义”，装饰一律用中性色。 */
+  --bg:            #F6F6F4;  /* 页面底：暖灰白 */
+  --surface:       #FFFFFF;  /* 卡片/代码块底 */
+  --surface-2:     #EFEFEC;  /* 次级面：用户气泡、工具卡头 */
+  --surface-3:     #E6E6E2;  /* 悬浮/选中 */
+  --border:        #DADAD5;
+  --border-strong: #BDBDB7;
+
+  --text:          #1C1F23;  /* 正文  14.9:1 */
+  --text-2:        #4F5660;  /* 次级  7.1:1  */
+  --text-3:        #697180;  /* 三级/元信息 4.5:1 */
+  --text-4:        #858B94;  /* 占位/禁用 3:1 —— 不承载必读内容 */
+
+  /* 语义色：每种语义同时有 文字色(fg) / 底色(bg) / 描边(line) 三档 */
+  --accent:        #2457D6;  /* 动作/链接/用户 */
+  --accent-bg:     #E9EFFD;
+  --accent-line:   #9DB4F2;
+
+  --running:       #2457D6;  /* 进行中：与 accent 同色相，用“运动”区分 */
+  --success:       #19733A;  /* 完成 */
+  --success-bg:    #E6F4EA;
+  --warning:       #8A5A00;  /* 等待人工 / 需注意 */
+  --warning-bg:    #FBF1DC;
+  --danger:        #C22F2F;  /* 仅用于失败/破坏性操作 */
+  --danger-bg:     #FBE8E8;
+  --neutral:       #697180;  /* 跳过 / 取消 / 未开始 */
+
+  --thinking:      #5F6672;  /* 推理过程：刻意降对比，表达“这是过程不是结论” */
+  --thinking-bg:   #F1F1EF;
+
+  /* 代码高亮（低饱和，同亮度，避免“彩虹”） */
+  --code-bg:       #F1F1EE;
+  --code-kw:       #7A3E9D;
+  --code-str:      #19733A;
+  --code-num:      #A35300;
+  --code-fn:       #2457D6;
+  --code-cm:       #656D76;
+  --diff-add-bg:   #E3F3E6;
+  --diff-add-fg:   #19733A;
+  --diff-del-bg:   #FBE8E8;
+  --diff-del-fg:   #C22F2F;
+
+  --focus-ring:    0 0 0 3px #9DB4F2;
+  --shadow-sm:     0 1px 2px rgba(20,22,26,.06), 0 0 0 1px rgba(20,22,26,.04);
+}
+
+/* ---------- 10. 色彩：深色主题 ----------
+   不用纯黑底、不用纯白字（散光用户会出现光晕 halation）。
+   层级靠“更亮的面”而不是阴影；语义色提亮并降饱和。
+   两处定义：手动 data-theme="dark" 与系统 prefers-color-scheme 都生效。 */
+
+:root[data-theme="dark"] {
+  --bg:            #141517;
+  --surface:       #1C1E22;
+  --surface-2:     #24272C;
+  --surface-3:     #2D3137;
+  --border:        #33373D;
+  --border-strong: #4A4F57;
+
+  --text:          #E4E4E1;  /* 13.6:1，不是纯白 */
+  --text-2:        #A8ADB4;  /* 7.4:1 */
+  --text-3:        #858B93;  /* 4.6:1 */
+  --text-4:        #5E646B;
+
+  --accent:        #7EA2F5;
+  --accent-bg:     #1E2A45;
+  --accent-line:   #3B5597;
+
+  --running:       #7EA2F5;
+  --success:       #63C27A;
+  --success-bg:    #16301F;
+  --warning:       #E0B04F;
+  --warning-bg:    #352A12;
+  --danger:        #F07A7A;
+  --danger-bg:     #3A1D1F;
+  --neutral:       #858B93;
+
+  --thinking:      #9AA0A8;
+  --thinking-bg:   #1A1C20;
+
+  --code-bg:       #202329;
+  --code-kw:       #C792EA;
+  --code-str:      #8FD19E;
+  --code-num:      #F2B266;
+  --code-fn:       #82AAFF;
+  --code-cm:       #838B95;
+  --diff-add-bg:   #1B3222;
+  --diff-add-fg:   #8FD19E;
+  --diff-del-bg:   #3A1F22;
+  --diff-del-fg:   #F2A0A0;
+
+  --focus-ring:    0 0 0 3px #3B5597;
+  --shadow-sm:     0 0 0 1px rgba(255,255,255,.04);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:            #141517;
+    --surface:       #1C1E22;
+    --surface-2:     #24272C;
+    --surface-3:     #2D3137;
+    --border:        #33373D;
+    --border-strong: #4A4F57;
+    --text:          #E4E4E1;
+    --text-2:        #A8ADB4;
+    --text-3:        #858B93;
+    --text-4:        #5E646B;
+    --accent:        #7EA2F5;
+    --accent-bg:     #1E2A45;
+    --accent-line:   #3B5597;
+    --running:       #7EA2F5;
+    --success:       #63C27A;
+    --success-bg:    #16301F;
+    --warning:       #E0B04F;
+    --warning-bg:    #352A12;
+    --danger:        #F07A7A;
+    --danger-bg:     #3A1D1F;
+    --neutral:       #858B93;
+    --thinking:      #9AA0A8;
+    --thinking-bg:   #1A1C20;
+    --code-bg:       #202329;
+    --code-kw:       #C792EA;
+    --code-str:      #8FD19E;
+    --code-num:      #F2B266;
+    --code-fn:       #82AAFF;
+    --code-cm:       #838B95;
+    --diff-add-bg:   #1B3222;
+    --diff-add-fg:   #8FD19E;
+    --diff-del-bg:   #3A1F22;
+    --diff-del-fg:   #F2A0A0;
+    --focus-ring:    0 0 0 3px #3B5597;
+    --shadow-sm:     0 0 0 1px rgba(255,255,255,.04);
+  }
+}
+
+/* ---------- 11. 密度模式 ----------
+   紧凑模式给高频专业用户：字号 -1px、行高 1.6、间距 ×0.75 */
+:root[data-density="compact"] {
+  --fs-md: 14px;
+  --fs-sm: 12.5px;
+  --lh-body: 1.6;
+  --space-3: 9px;
+  --space-4: 12px;
+  --space-6: 18px;
+  --space-7: 24px;
+}
+
+/* ---------- 12. 动效降级 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-fast: 0ms; --dur-base: 0ms; --dur-slow: 0ms; }
+}

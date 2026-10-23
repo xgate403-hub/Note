@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Agent 会话窗口 · 易读显示方案原型</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="demo.css">
+</head>
+<body>
+<!-- 状态图形：颜色之外的第二编码（形状），色觉障碍用户也能分辨 -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-pending" viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.5" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+    <symbol id="i-running" viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.5" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".25"/><path d="M6 1.5a4.5 4.5 0 0 1 4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-done" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" fill="currentColor"/><path d="M3.6 6.2l1.7 1.6 3.2-3.4" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-failed" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" fill="currentColor"/><path d="M4 4l4 4M8 4l-4 4" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></symbol>
+    <symbol id="i-waiting" viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 3.3V6l1.9 1.3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+    <symbol id="i-skipped" viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3.5 6h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 12 12"><path d="M4 2.5L7.5 6 4 9.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-agent" viewBox="0 0 16 16"><path d="M3 5.5A2.5 2.5 0 0 1 5.5 3h5A2.5 2.5 0 0 1 13 5.5v4a2.5 2.5 0 0 1-2.5 2.5H7l-2.6 2v-2A2.5 2.5 0 0 1 3 9.5z" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="6.5" cy="7.5" r=".9" fill="currentColor"/><circle cx="9.5" cy="7.5" r=".9" fill="currentColor"/></symbol>
+    <symbol id="i-info" viewBox="0 0 18 18"><circle cx="9" cy="9" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9 8v4.5M9 5.5v.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-warn" viewBox="0 0 18 18"><path d="M9 2.5l7 12.5H2z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 7v3.5M9 13v.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-err" viewBox="0 0 18 18"><rect x="2.5" y="2.5" width="13" height="13" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 6.5l5 5M11.5 6.5l-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-ok" viewBox="0 0 18 18"><circle cx="9" cy="9" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5.8 9.3l2.3 2.2 4.2-4.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-ask" viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.6" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M4.6 4.8a1.4 1.4 0 1 1 2 1.3c-.4.2-.6.5-.6.9M6 8.7v.3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></symbol>
+    <!-- 绿色盲（deuteranopia）模拟滤镜，用于自检状态编码是否只依赖颜色 -->
+    <filter id="deuteranopia"><feColorMatrix type="matrix" values="0.625 0.375 0 0 0  0.7 0.3 0 0 0  0 0.3 0.7 0 0  0 0 0 1 0"/></filter>
+  </defs>
+</svg>
+
+<nav class="nav" id="nav">
+  <a href="?scene=overview">总览</a><a href="?scene=streaming">流式输出</a><a href="?scene=tools">工具调用</a><a href="?scene=plan">计划清单</a><a href="?scene=dag">DAG</a><a href="?scene=flow">流程图</a><a href="?scene=decision">决策与提示</a><a href="?scene=code">代码与 diff</a><a href="?scene=typography">字体排版</a><a href="?scene=color">色彩</a><a href="?scene=antipatterns">反例对照</a>
+  <span class="spacer"></span>
+  <button id="themeBtn" type="button">切换主题</button>
+  <button id="densityBtn" type="button">密度</button>
+</nav>
+
+<main class="shell">
+
+<!-- ====================================================== 1. 总览 -->
+<section class="scene" data-scene="overview">
+  <div class="chat">
+    <div class="turn">
+      <div class="turn-rail"><div class="avatar user">你</div></div>
+      <div class="turn-body">
+        <div class="turn-head"><b>你</b><span>14:02</span></div>
+        <div class="user-msg">CI 在 Node 22 上总是超时，Node 20 正常。帮我查一下原因，不要改代码，先告诉我结论。</div>
+      </div>
+    </div>
+
+    <div class="turn">
+      <div class="turn-rail"><div class="avatar agent"><svg><use href="#i-agent"/></svg></div></div>
+      <div class="turn-body">
+        <div class="turn-head"><b>Agent</b><span>14:02 · 用时 48s</span></div>
+
+        <details class="thinking">
+          <summary><svg class="chev"><use href="#i-chev"/></svg><span>思考过程</span><span class="muted">· 12s</span></summary>
+          <div class="body"><p>两个 Node 版本的差异最可能在：原生模块重新编译、测试框架默认超时、以及 Node 22 对 <code>fetch</code> 的 keep-alive 行为变化。先看 CI 日志里哪一步卡住，再看 lockfile 有没有锁死某个只支持 Node 20 的依赖。</p></div>
+        </details>
+
+        <details class="activity">
+          <summary><svg class="chev"><use href="#i-chev"/></svg><span class="st done"><span class="dot"><svg><use href="#i-done"/></svg></span>调用 4 个工具</span><span class="meta">36s</span></summary>
+          <div class="tool done"><span class="dot st done"><svg><use href="#i-done"/></svg></span><div><div class="intent">读取 CI 配置，确认 Node 22 作业的超时设置</div><div class="call"><code>Read .github/workflows/ci.yml</code><span class="dur">0.3s</span></div></div></div>
+          <div class="tool done"><span class="dot st done"><svg><use href="#i-done"/></svg></span><div><div class="intent">在最近一次失败日志中定位卡住的步骤</div><div class="call"><code>Bash gh run view 8812 --log-failed</code><span class="dur">4.1s</span></div><div class="result">最后输出停在 <code>jest --runInBand</code> 的 <code>api/upload.test.ts</code>，之后 30 分钟无输出。</div></div></div>
+          <div class="tool done"><span class="dot st done"><svg><use href="#i-done"/></svg></span><div><div class="intent">查找该测试文件里是否使用了全局 fetch</div><div class="call"><code>Grep "fetch(" api/upload.test.ts</code><span class="dur">0.2s</span></div></div></div>
+          <div class="tool done"><span class="dot st done"><svg><use href="#i-done"/></svg></span><div><div class="intent">确认 mock server 是否显式关闭连接</div><div class="call"><code>Read test/helpers/mockServer.ts</code><span class="dur">0.3s</span></div></div></div>
+        </details>
+
+        <div class="prose">
+          <div class="answer"><div class="k">结论</div>超时来自 <code>api/upload.test.ts</code>：Node 22 的全局 <code>fetch</code> 默认保持连接（keep-alive），而测试里的 mock server 从不主动关闭，Jest 等待事件循环清空直到被 CI 的 30 分钟上限杀掉。Node 20 没有这个默认行为，所以正常。</div>
+
+          <h3>依据</h3>
+          <ul>
+            <li><strong>日志停在同一位置。</strong>最近 3 次失败都卡在 <code>upload.test.ts</code> 之后，无任何输出。</li>
+            <li><strong>只有这个文件用了裸 fetch。</strong>其他测试都走 <code>supertest</code>，自带连接关闭。</li>
+            <li><strong>mock server 没有 <code>close()</code>。</strong><code>mockServer.ts</code> 的 <code>afterAll</code> 只清理了路由。</li>
+          </ul>
+
+          <h3>影响范围</h3>
+          <table>
+            <thead><tr><th>Node 版本</th><th class="num">近 10 次运行</th><th class="num">超时次数</th><th class="num">平均耗时</th></tr></thead>
+            <tbody>
+              <tr><td>20.x</td><td class="num">10</td><td class="num">0</td><td class="num">6m 12s</td></tr>
+              <tr><td>22.x</td><td class="num">10</td><td class="num">7</td><td class="num">30m 00s</td></tr>
+            </tbody>
+          </table>
+
+          <div class="next"><div class="k">下一步（需要你决定）</div>按你的要求我没有改代码。最小修复是在 <code>afterAll</code> 里调用 <code>server.close()</code> 并给 fetch 传 <code>keepalive: false</code>，大约 3 行改动。要我提交吗？</div>
+        </div>
+        <div class="footer-actions"><span>复制</span><span>重新生成</span><span>查看原始输出</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== 2. 流式输出中 -->
+<section class="scene" data-scene="streaming">
+  <div class="chat">
+    <div class="turn">
+      <div class="turn-rail"><div class="avatar user">你</div></div>
+      <div class="turn-body">
+        <div class="turn-head"><b>你</b><span>14:05</span></div>
+        <div class="user-msg">好，那就按最小修复改，顺便把测试跑一遍。</div>
+      </div>
+    </div>
+    <div class="turn">
+      <div class="turn-rail"><div class="avatar agent"><svg><use href="#i-agent"/></svg></div></div>
+      <div class="turn-body">
+        <div class="turn-head"><b>Agent</b><span>14:05</span></div>
+
+        <!-- 状态行：始终告诉用户“现在在做什么、已经多久、怎么停” -->
+        <div class="status-line"><span class="st running"><span class="dot"><svg><use href="#i-running"/></svg></span>正在运行测试</span><span class="elapsed" data-elapsed="23">00:23</span><button class="stop" type="button"><i></i>停止 <span class="kbd">Esc</span></button></div>
+
+        <details class="thinking" open>
+          <summary><svg class="chev"><use href="#i-chev"/></svg><span>思考中</span><span class="muted">· 3s</span><span class="live">· 只改 afterAll 不够，fetch 调用处也要…</span></summary>
+          <div class="body"><p>用户要最小修复。只在 <code>afterAll</code> 里 <code>close()</code> 不够：如果用例失败，<code>afterAll</code> 仍会执行，但 keep-alive 的 socket 可能让 close 回调迟迟不触发。所以还要在 fetch 调用处关掉 keepalive。</p><p>先改 mockServer.ts，再改 upload.test.ts，最后只跑这一个文件验证，不跑全量。<span class="caret"></span></p></div>
+        </details>
+
+        <details class="activity" open>
+          <summary><svg class="chev"><use href="#i-chev"/></svg><span class="st running"><span class="dot"><svg><use href="#i-running"/></svg></span>进行中 · 3 / 4</span><span class="meta">18s</span></summary>
+          <div class="tool done"><span class="dot st done"><svg><use href="#i-done"/></svg></span><div><div class="intent">在 afterAll 中关闭 mock server</div><div class="call"><code>Edit test/helpers/mockServer.ts</code><span class="dur">0.4s</span><span>+2 −0</span></div></div></div>
+          <div class="tool done"><span class="dot st done"><svg><use href="#i-done"/></svg></span><div><div class="intent">给上传请求关闭 keep-alive</div><div class="call"><code>Edit api/upload.test.ts</code><span class="dur">0.3s</span><span>+1 −1</span></div></div></div>
+          <div class="tool running"><span class="dot st running"><svg><use href="#i-running"/></svg></span><div><div class="intent">只运行受影响的测试文件验证修复</div><div class="call"><code>Bash npx jest api/upload.test.ts</code><span class="dur" data-elapsed="17">17s</span></div>
+            <div class="result mono">PASS api/upload.test.ts (12.4 s)
+  upload
+    ✓ accepts a 2 MB file (1803 ms)
+    ✓ rejects unsupported mime (211 ms)
+    ○ streams progress events<span class="skeleton" style="display:inline-block;width:120px;height:10px;vertical-align:middle;margin-left:8px"></span></div></div></div>
+          <div class="tool pending"><span class="dot st pending"><svg><use href="#i-pending"/></svg></span><div><div class="intent muted">运行 lint，确认没有新告警</div><div class="call"><code>Bash npm run lint</code></div></div></div>
+        </details>
+
+        <div class="prose">
+          <p>已经改了两处，正在验证。到目前为止：</p>
+          <ul>
+            <li><strong>mockServer.ts</strong>：<code>afterAll</code> 中新增 <code>await new Promise(r =&gt; server.close(r))</code>。</li>
+            <li><strong>upload.test.ts</strong>：fetch 选项加 <code>keepalive: false</code>，其余不动。</li>
+          </ul>
+          <p>改动的核心是这一段：</p>
+          <!-- 未闭合的代码围栏：流式期间也按代码块渲染，而不是先显示反引号 -->
+          <div class="codeblock streaming">
+            <div class="hd"><span class="lang">ts</span><span>test/helpers/mockServer.ts</span><span class="act"><span class="muted">接收中…</span></span></div>
+            <pre><div class="ln"><span>14</span><span><span class="kw">afterAll</span>(<span class="kw">async</span> () =&gt; {</span></div><div class="ln"><span>15</span><span>  routes.<span class="fn">clear</span>();</span></div><div class="ln add"><span>16</span><span>  <span class="kw">await</span> <span class="kw">new</span> <span class="fn">Promise</span>&lt;<span class="kw">void</span>&gt;(resolve =&gt; server.<span class="fn">close</span>(() =&gt; <span class="fn">resolve</span>()));<span class="caret"></span></span></div></pre>
+          </div>
+        </div>
+        <div class="new-pill">↓ 有新内容</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== 3. 工具调用 -->
+<section class="scene" data-scene="tools">
+  <div class="chat">
+    <div class="turn">
+      <div class="turn-rail"><div class="avatar agent"><svg><use href="#i-agent"/></svg></div></div>
+      <div class="turn-body">
+        <div class="turn-head"><b>Agent</b><span>14:09</span></div>
+        <div class="status-line"><span class="st waiting"><span class="dot"><svg><use href="#i-waiting"/></svg></span>有一步失败，等待处理</span></div>
+
+        <details class="activity" open>
+          <summary><svg class="chev"><use href="#i-chev"/></svg><span class="st failed"><span class="dot"><svg><use href="#i-failed"/></svg></span>5 个工具 · 1 个失败</span><span class="meta">41s</span></summary>
+
+          <div class="tool done"><span class="dot st done"><svg><use href="#i-done"/></svg></span><div>
+            <div class="intent">列出 workflows 目录，确认有几个 CI 配置文件</div>
+            <div class="call"><code>Bash ls .github/workflows</code><span class="dur">0.1s</span></div>
+            <div class="result">ci.yml · release.yml · codeql.yml</div>
+          </div></div>
+
+          <div class="tool done"><span class="dot st done"><svg><use href="#i-done"/></svg></span><div>
+            <div class="intent">读取 ci.yml，找到矩阵与超时设置</div>
+            <div class="call"><code>Read .github/workflows/ci.yml</code><span class="dur">0.2s</span><span>88 行</span></div>
+          </div></div>
+
+          <div class="tool done"><span class="dot st done"><svg><use href="#i-done"/></svg></span><div>
+            <div class="intent">拉取最近一次失败运行的完整日志（长输出，默认只显示首尾）</div>
+            <div class="call"><code>Bash gh run view 8812 --log-failed</code><span class="dur">4.1s</span><span>2,418 行</span></div>
+            <div class="result mono">2026-10-23T05:41:02Z  Run npx jest --runInBand
+2026-10-23T05:41:03Z  PASS api/auth.test.ts (3.1 s)
+2026-10-23T05:41:08Z  PASS api/search.test.ts (4.6 s)
+2026-10-23T05:41:09Z  RUNS api/upload.test.ts<span class="cut">… 已折叠 2,410 行 · 点击展开 …</span>2026-10-23T06:11:09Z  Error: The operation was canceled.
+2026-10-23T06:11:09Z  ##[error]The job running on runner has exceeded the maximum execution time of 30 minutes.</div>
+          </div></div>
+
+          <div class="tool failed"><span class="dot st failed"><svg><use href="#i-failed"/></svg></span><div>
+            <div class="intent">对比 Node 20 成功运行的日志（失败项自动展开，不折叠）</div>
+            <div class="call"><code>Bash gh run view 8790 --log</code><span class="dur">1.8s</span><span class="st failed">退出码 1</span></div>
+            <div class="result mono">HTTP 404: Not Found (https://api.github.com/repos/acme/app/actions/runs/8790)
+run 8790 was deleted by the retention policy (90 days)</div>
+            <div class="result">原因：该运行已超过日志保留期。改为对比第 8801 次运行。</div>
+            <div class="actions"><button class="btn primary" type="button">用 8801 重试</button><button class="btn" type="button">跳过对比</button></div>
+          </div></div>
+
+          <div class="tool pending"><span class="dot st pending"><svg><use href="#i-pending"/></svg></span><div>
+            <div class="intent muted">对比两个版本的 jest 配置差异</div>
+            <div class="call"><code>Bash diff &lt;(…) &lt;(…)</code></div>
+          </div></div>
+        </details>
+
+        <div class="prose">
+          <p class="muted small">工具卡片的三层信息：第 1 行是<strong>意图</strong>（为什么做），第 2 行是<strong>机制</strong>（调了什么、多久），第 3 层才是<strong>原始输出</strong>（默认折叠，失败时自动展开）。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== 4. 计划清单 -->
+<section class="scene" data-scene="plan">
+  <div class="chat">
+    <div class="turn">
+      <div class="turn-rail"><div class="avatar agent"><svg><use href="#i-agent"/></svg></div></div>
+      <div class="turn-body">
+        <div class="turn-head"><b>Agent</b><span>15:20</span></div>
+        <div class="status-line"><span class="st running"><span class="dot"><svg><use href="#i-running"/></svg></span>第 2 阶段 · 迁移数据库 schema</span><span class="elapsed">04:12</span><button class="stop" type="button"><i></i>停止</button></div>
+        <div class="prose">
+          <p>把上传服务从单机迁到对象存储，分三个阶段。过去的步骤变灰、当前步骤高亮、未开始的只有轮廓：</p>
+          <div class="plan">
+            <div class="bar"><i style="width:42%"></i></div>
+            <div class="ph">阶段 1 · 准备 <span class="n">3 / 3</span></div>
+            <div class="it done"><span class="dot st done"><svg><use href="#i-done"/></svg></span><span class="label">盘点现有上传入口<span class="sub">3 个 API、1 个后台任务</span></span><span class="right">0:41</span></div>
+            <div class="it done"><span class="dot st done"><svg><use href="#i-done"/></svg></span><span class="label">创建 S3 bucket 与 IAM 策略</span><span class="right">1:05</span></div>
+            <div class="it done"><span class="dot st done"><svg><use href="#i-done"/></svg></span><span class="label">写入 feature flag <code>uploads.s3</code>，默认关闭</span><span class="right">0:22</span></div>
+
+            <div class="ph">阶段 2 · 迁移 <span class="n">1 / 4</span></div>
+            <div class="it done"><span class="dot st done"><svg><use href="#i-done"/></svg></span><span class="label">新增 <code>storage_key</code> 列（可空）</span><span class="right">0:37</span></div>
+            <div class="it running"><span class="dot st running"><svg><use href="#i-running"/></svg></span><span class="label">回填 23 万条历史记录的 storage_key<span class="sub">已处理 96,400 / 230,118 · 预计还需 3 分钟</span></span><span class="right">2:48</span></div>
+            <div class="it waiting"><span class="dot st waiting"><svg><use href="#i-waiting"/></svg></span><span class="label">切换写入路径到 S3<span class="sub">需要你确认：生产环境写入权限</span></span><span class="right">等待</span></div>
+            <div class="it pending"><span class="dot st pending"><svg><use href="#i-pending"/></svg></span><span class="label">双写 24 小时后校验一致性</span><span class="right"></span></div>
+
+            <div class="ph">阶段 3 · 收尾 <span class="n">0 / 3</span></div>
+            <div class="it pending"><span class="dot st pending"><svg><use href="#i-pending"/></svg></span><span class="label">读路径切到 S3</span><span class="right"></span></div>
+            <div class="it skipped"><span class="dot st skipped"><svg><use href="#i-skipped"/></svg></span><span class="label muted">清理本地磁盘<span class="sub">已跳过：运维要求保留 30 天</span></span><span class="right"></span></div>
+            <div class="it pending"><span class="dot st pending"><svg><use href="#i-pending"/></svg></span><span class="label">删除 feature flag</span><span class="right"></span></div>
+          </div>
+          <p class="muted small">清单在原位更新（不重新渲染整块），所以滚动位置和已展开状态不会丢。失败项不会被自动折叠。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== 5. DAG -->
+<section class="scene" data-scene="dag">
+  <div class="chat">
+    <div class="turn">
+      <div class="turn-rail"><div class="avatar agent"><svg><use href="#i-agent"/></svg></div></div>
+      <div class="turn-body">
+        <div class="turn-head"><b>Agent</b><span>16:01</span></div>
+        <div class="status-line"><span class="st running"><span class="dot"><svg><use href="#i-running"/></svg></span>并行执行 2 个任务</span><span class="elapsed">01:37</span><button class="stop" type="button"><i></i>停止</button></div>
+        <div class="prose">
+          <p>发布流程有依赖关系，用图比清单清楚。从左到右按层排列，已完成的边是实线绿色，当前活动路径加粗，未开始的是虚线：</p>
+          <div class="graph" id="dag1"></div>
+          <p class="muted small">图下方始终附带文字版（可复制、可读屏），图只是加速理解，不是唯一信息源：</p>
+          <ol class="small">
+            <li>拉取代码 → 安装依赖（完成）</li><li>安装依赖 → 单元测试 / 构建镜像 / Lint（单测与构建进行中，Lint 完成）</li><li>单元测试 + 构建镜像 → 集成测试（等待）</li><li>集成测试 → 人工审批（等待）→ 发布到灰度 → 发布到生产（等待）</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== 6. 流程图 -->
+<section class="scene" data-scene="flow">
+  <div class="chat">
+    <div class="turn">
+      <div class="turn-rail"><div class="avatar agent"><svg><use href="#i-agent"/></svg></div></div>
+      <div class="turn-body">
+        <div class="turn-head"><b>Agent</b><span>16:14</span></div>
+        <div class="prose">
+          <p>这是我处理每条告警的判断流程，蓝色 ▶ 标记是<strong>当前所在位置</strong>。决策节点用菱形、动作用圆角矩形，Yes/No 永远标在边上而不是节点里：</p>
+          <div class="graph" id="flow1"></div>
+          <p class="muted small">规则：流程 ≤ 12 个节点；超过就拆分成子流程并折叠。文字一律水平，不旋转。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== 7. 决策与提示 -->
+<section class="scene" data-scene="decision">
+  <div class="chat">
+    <div class="turn">
+      <div class="turn-rail"><div class="avatar agent"><svg><use href="#i-agent"/></svg></div></div>
+      <div class="turn-body">
+        <div class="turn-head"><b>Agent</b><span>16:30</span></div>
+        <div class="status-line"><span class="st waiting"><span class="dot"><svg><use href="#i-waiting"/></svg></span>等待你的决定 · 其余工作已暂停</span></div>
+        <div class="prose">
+          <div class="ask">
+            <div class="hd"><svg width="12" height="12"><use href="#i-ask"/></svg>需要你决定</div>
+            <div class="q">回填 23 万条记录时发现 1,204 条文件在磁盘上已不存在。这些记录怎么处理？</div>
+            <div class="ctx">它们都在 2023 年之前创建，占总量 0.5%。无论选哪个，其余记录的回填都会继续。</div>
+            <div class="opts">
+              <div class="opt rec"><span class="r"></span><div><div class="l">标记为缺失，继续迁移 <span class="tag">推荐</span></div><div class="d">把 <code>storage_key</code> 置为 <code>null</code> 并写入 <code>missing_at</code>，前端显示“文件不可用”。</div><div class="why">为什么推荐：可逆，不丢信息，迁移不会被阻塞。</div></div></div>
+              <div class="opt"><span class="r"></span><div><div class="l">暂停迁移，先人工核对</div><div class="d">我导出这 1,204 条的清单给你，核对完再继续。</div><div class="why">代价：阻塞约 1 天，期间双写不能开启。</div></div></div>
+              <div class="opt"><span class="r"></span><div><div class="l">直接删除这些记录</div><div class="d">从数据库中删除。<strong>不可逆</strong>，需要二次确认。</div></div></div>
+            </div>
+          </div>
+
+          <p class="muted small" style="margin-top:28px">四种提示框只在语义成立时出现，一条消息里最多一个红色：</p>
+          <div class="callout info"><svg class="ic"><use href="#i-info"/></svg><div><div class="t">说明</div>feature flag 默认关闭，这一步不影响线上流量。</div></div>
+          <div class="callout ok"><svg class="ic"><use href="#i-ok"/></svg><div><div class="t">已完成</div>12 个测试全部通过，耗时 14.2s，没有新增 lint 告警。</div></div>
+          <div class="callout warn"><svg class="ic"><use href="#i-warn"/></svg><div><div class="t">注意</div>你的 AWS 凭证将在 38 分钟后过期。回填预计还需 3 分钟，来得及，但请不要离开。</div></div>
+          <div class="callout err"><svg class="ic"><use href="#i-err"/></svg><div><div class="t">失败：迁移未执行</div><code>ER_LOCK_WAIT_TIMEOUT</code>：另一事务持有 <code>uploads</code> 表锁超过 50s。没有任何数据被修改。我可以等 60s 后重试一次，或者你先结束那个事务。</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== 8. 代码与 diff -->
+<section class="scene" data-scene="code">
+  <div class="chat">
+    <div class="turn">
+      <div class="turn-rail"><div class="avatar agent"><svg><use href="#i-agent"/></svg></div></div>
+      <div class="turn-body">
+        <div class="turn-head"><b>Agent</b><span>14:07</span></div>
+        <div class="prose">
+          <p>两处改动如下。增删行同时用<strong>底色 + 行首符号 + 行号颜色</strong>三种方式标记，色觉障碍下也能区分：</p>
+          <div class="codeblock diff">
+            <div class="hd"><span class="lang">diff</span><span>test/helpers/mockServer.ts</span><span class="act"><span>+2 −0</span><span>复制</span><span>在编辑器打开</span></span></div>
+            <pre><div class="ln ctx"><span>12</span><span><span class="kw">export</span> <span class="kw">async</span> <span class="kw">function</span> <span class="fn">stop</span>() {</span></div><div class="ln ctx"><span>13</span><span>  routes.<span class="fn">clear</span>();</span></div><div class="ln add"><span>14</span><span>  <span class="cm">// Node 22: fetch 默认 keep-alive，必须显式关闭 server 才能让 Jest 退出</span></span></div><div class="ln add"><span>15</span><span>  <span class="kw">await</span> <span class="kw">new</span> <span class="fn">Promise</span>&lt;<span class="kw">void</span>&gt;(resolve =&gt; server.<span class="fn">close</span>(() =&gt; <span class="fn">resolve</span>()));</span></div><div class="ln ctx"><span>16</span><span>}</span></div></pre>
+          </div>
+          <div class="codeblock diff">
+            <div class="hd"><span class="lang">diff</span><span>api/upload.test.ts</span><span class="act"><span>+1 −1</span><span>复制</span></span></div>
+            <pre><div class="ln ctx"><span>41</span><span>  <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(url, {</span></div><div class="ln ctx"><span>42</span><span>    method: <span class="str">"POST"</span>,</span></div><div class="ln del"><span>43</span><span>    body: form,</span></div><div class="ln add"><span>43</span><span>    body: form, keepalive: <span class="kw">false</span>,</span></div><div class="ln ctx"><span>44</span><span>  });</span></div></pre>
+          </div>
+
+          <p>完整的新文件（超过 24 行默认折叠，保留首尾）：</p>
+          <div class="codeblock">
+            <div class="hd"><span class="lang">ts</span><span>test/helpers/mockServer.ts</span><span class="act"><span>48 行</span><span>复制</span></span></div>
+            <pre><div class="ln"><span>1</span><span><span class="kw">import</span> http <span class="kw">from</span> <span class="str">"node:http"</span>;</span></div><div class="ln"><span>2</span><span><span class="kw">import</span> { routes } <span class="kw">from</span> <span class="str">"./routes"</span>;</span></div><div class="ln"><span>3</span><span></span></div><div class="ln"><span>4</span><span><span class="kw">const</span> PORT = <span class="num">4010</span>;</span></div><div class="ln hl"><span>5</span><span><span class="kw">let</span> server: http.Server;  <span class="cm">// ← 高亮行：引用时定位</span></span></div><div class="ln"><span>6</span><span></span></div><div class="ln"><span>7</span><span><span class="kw">export</span> <span class="kw">function</span> <span class="fn">start</span>() {</span></div><div class="ln"><span>8</span><span>  server = http.<span class="fn">createServer</span>((req, res) =&gt; routes.<span class="fn">handle</span>(req, res));</span></div><div class="ln"><span>9</span><span>  <span class="kw">return</span> <span class="kw">new</span> <span class="fn">Promise</span>&lt;<span class="kw">void</span>&gt;(r =&gt; server.<span class="fn">listen</span>(PORT, r));</span></div><div class="ln"><span>10</span><span>}</span></div></pre>
+            <div class="fold">展开其余 38 行</div>
+          </div>
+          <p>行内引用用 <code>file_path:line</code> 形式，例如 <code>test/helpers/mockServer.ts:15</code>，可点击跳转；命令单独成块：</p>
+          <div class="codeblock"><div class="hd"><span class="lang">sh</span><span class="act"><span>复制</span></span></div><pre><div class="ln"><span>$</span><span>npx jest api/upload.test.ts --runInBand</span></div></pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== 9. 字体排版 -->
+<section class="scene" data-scene="typography">
+  <div class="spec">
+    <div class="card scale">
+      <h3>字号阶梯与行高（基准 15px / 1.7）</h3>
+      <div class="row"><small>2xl 24 / 1.3 / 600</small><div style="font-size:24px;line-height:1.3;font-weight:600">会话标题：上传服务迁移</div></div>
+      <div class="row"><small>xl 20 / 1.3 / 600</small><div style="font-size:20px;line-height:1.3;font-weight:600">消息内二级标题 Section heading</div></div>
+      <div class="row"><small>lg 17 / 1.3 / 600</small><div style="font-size:17px;line-height:1.3;font-weight:600">消息内三级标题 Sub heading</div></div>
+      <div class="row"><small>md 15 / 1.7 / 400</small><div>正文：中文每行 32–42 字时眼跳回扫最准确。Inter 的 x 高度与思源黑体的中宫大小接近，混排时视觉重量一致，数字 0123456789 与字母 Il1 O0 清晰可辨。</div></div>
+      <div class="row"><small>sm 13 / 1.6 / mono</small><div style="font-family:var(--font-mono);font-size:13px;line-height:1.6">const port = process.env.PORT ?? 4010; // 0O il1 {}[]()</div></div>
+      <div class="row"><small>xs 12 / 1.45 / 400</small><div style="font-size:12px;line-height:1.45;color:var(--text-3)">元信息：14:02 · 用时 48s · 4 个工具 · 来源 3 条</div></div>
+      <div class="note">12px 是下限，只用于元信息；11px 只允许出现在徽标里，不允许组成句子。字重 700 只用于 ≥20px 的标题——小字号的汉字在 700 字重下会糊成一团。</div>
+    </div>
+
+    <div class="card measure-demo">
+      <h3>行长（measure）：同一段落的两种宽度</h3>
+      <div class="two">
+        <div class="bad" style="grid-column:1/-1"><span class="lbl">✕ 过宽 · 约 70 字/行</span><p class="wide">超时来自 upload 测试：Node 22 的全局 fetch 默认保持连接，而测试里的 mock server 从不主动关闭，Jest 等待事件循环清空直到被 CI 的 30 分钟上限杀掉。Node 20 没有这个默认行为，所以正常。视线从行尾回扫到下一行开头时，距离越长越容易串行，读者会不自觉地重读或跳行，这就是长行降低阅读速度的生理原因。</p></div>
+        <div class="good" style="grid-column:1/-1"><span class="lbl">✓ 680px · 约 40 字/行</span><p class="ok">超时来自 upload 测试：Node 22 的全局 fetch 默认保持连接，而测试里的 mock server 从不主动关闭，Jest 等待事件循环清空直到被 CI 的 30 分钟上限杀掉。Node 20 没有这个默认行为，所以正常。视线从行尾回扫到下一行开头时，距离越长越容易串行，读者会不自觉地重读或跳行，这就是长行降低阅读速度的生理原因。</p></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>中西文混排细节</h3>
+      <div class="two">
+        <div class="bad"><span class="lbl">✕</span><p style="margin:0;font-style:italic">用<i>斜体</i>强调中文(假斜体),数字1234和英文API紧贴汉字,标点用半角,整句加粗<b>让读者找不到重点</b>。</p></div>
+        <div class="good"><span class="lbl">✓</span><p style="margin:0">用<em>着重号</em>或字重强调中文，数字 1234 和英文 API 与汉字之间留 1/4 空格，标点用全角，只加粗<strong>关键词</strong>。</p></div>
+      </div>
+      <div class="note">CSS：<code>text-autospace: normal</code>（渐进增强）、<code>line-break: strict</code>、<code>overflow-wrap: anywhere</code>（长 URL 不撑破列）、<code>font-variant-numeric: tabular-nums</code>（表格数字对齐）。</div>
+    </div>
+
+    <div class="card">
+      <h3>数字：比例数字 vs 等宽数字</h3>
+      <div class="two">
+        <div class="bad"><span class="lbl">✕ 比例数字</span><div style="font-variant-numeric:proportional-nums;font-family:var(--font-sans)"><div>10 次运行 · 耗时 06:12</div><div>11 次运行 · 耗时 30:00</div><div>17 次运行 · 耗时 01:11</div></div></div>
+        <div class="good"><span class="lbl">✓ 等宽数字 tnum</span><div style="font-variant-numeric:tabular-nums;font-family:var(--font-sans)"><div>10 次运行 · 耗时 06:12</div><div>11 次运行 · 耗时 30:00</div><div>17 次运行 · 耗时 01:11</div></div></div>
+      </div>
+      <div class="note">流式更新的计时器、进度数字必须用等宽数字，否则每次刷新数字宽度都在跳。</div>
+    </div>
+
+    <div class="card">
+      <h3>密度模式</h3>
+      <div class="two">
+        <div class="good"><span class="lbl">舒适（默认）15px / 1.7</span><div style="font-size:15px;line-height:1.7">已经改了两处，正在验证。<br>mockServer.ts：afterAll 中新增 close。<br>upload.test.ts：fetch 选项加 keepalive: false。</div></div>
+        <div class="good"><span class="lbl">紧凑 14px / 1.6</span><div style="font-size:14px;line-height:1.6">已经改了两处，正在验证。<br>mockServer.ts：afterAll 中新增 close。<br>upload.test.ts：fetch 选项加 keepalive: false。</div></div>
+      </div>
+      <div class="note">紧凑模式给每天使用数小时的专业用户，仍不低于 14px。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== 10. 色彩 -->
+<section class="scene" data-scene="color">
+  <div class="spec">
+    <div class="card">
+      <h3>文字层级与实际对比度（由页面实时计算）</h3>
+      <div class="swatches" id="textSwatches"></div>
+      <div class="note">正文目标 ≥ 7:1（AAA，长时间阅读）；次级 ≥ 4.5:1；三级 ≥ 4.5:1 但只用于元信息；四级 &lt; 3:1 只用于占位和禁用，不得承载必读内容。</div>
+    </div>
+    <div class="card">
+      <h3>语义色：同一语义有 文字 / 底色 / 描边 三档</h3>
+      <div class="swatches" id="semSwatches"></div>
+      <div class="note">色相只分配给语义，一共 4 个（蓝＝动作/进行中、绿＝完成、琥珀＝等待/注意、红＝失败）。装饰性元素一律用中性灰，这样当红色出现时它一定意味着“出问题了”。</div>
+    </div>
+    <div class="card">
+      <h3>状态编码 = 颜色 + 形状 + 文字（下排为绿色盲模拟）</h3>
+      <div class="statusrow">
+        <span class="st pending"><span class="dot"><svg><use href="#i-pending"/></svg></span>未开始</span>
+        <span class="st running"><span class="dot"><svg><use href="#i-running"/></svg></span>进行中</span>
+        <span class="st done"><span class="dot"><svg><use href="#i-done"/></svg></span>完成</span>
+        <span class="st waiting"><span class="dot"><svg><use href="#i-waiting"/></svg></span>等待人工</span>
+        <span class="st failed"><span class="dot"><svg><use href="#i-failed"/></svg></span>失败</span>
+        <span class="st skipped"><span class="dot"><svg><use href="#i-skipped"/></svg></span>已跳过</span>
+      </div>
+      <div class="statusrow cvd" style="margin-top:8px">
+        <span class="st pending"><span class="dot"><svg><use href="#i-pending"/></svg></span>未开始</span>
+        <span class="st running"><span class="dot"><svg><use href="#i-running"/></svg></span>进行中</span>
+        <span class="st done"><span class="dot"><svg><use href="#i-done"/></svg></span>完成</span>
+        <span class="st waiting"><span class="dot"><svg><use href="#i-waiting"/></svg></span>等待人工</span>
+        <span class="st failed"><span class="dot"><svg><use href="#i-failed"/></svg></span>失败</span>
+        <span class="st skipped"><span class="dot"><svg><use href="#i-skipped"/></svg></span>已跳过</span>
+      </div>
+      <div class="note">约 8% 的男性有红绿色觉缺陷。模拟后“完成”与“失败”颜色几乎一样，但实心勾 / 实心叉 / 空心圈的形状差异仍然可辨，这就是必须双重编码的原因。</div>
+    </div>
+    <div class="card">
+      <h3>代码高亮：低饱和、近似等亮度</h3>
+      <div class="codeblock"><div class="hd"><span class="lang">ts</span></div><pre><div class="ln"><span>1</span><span><span class="kw">export</span> <span class="kw">async</span> <span class="kw">function</span> <span class="fn">backfill</span>(batch = <span class="num">500</span>) {</span></div><div class="ln"><span>2</span><span>  <span class="cm">// 只高亮 5 类：关键字 / 函数 / 字符串 / 数字 / 注释</span></span></div><div class="ln"><span>3</span><span>  <span class="kw">const</span> rows = <span class="kw">await</span> db.<span class="fn">query</span>(<span class="str">"select id from uploads where storage_key is null limit $1"</span>, [batch]);</span></div><div class="ln"><span>4</span><span>  <span class="kw">return</span> rows.length;</span></div></pre></div>
+      <div class="note">高亮的作用是分辨“词性”，不是装饰。5 种颜色是上限；颜色亮度接近，避免某一类词在视野中“跳出来”抢走注意力。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== 11. 反例对照 -->
+<section class="scene" data-scene="antipatterns">
+  <div class="spec">
+    <div class="card">
+      <h3>同一个回答的两种写法与排版</h3>
+      <div class="two">
+        <div class="bad"><span class="lbl">✕ 常见现状</span>
+          <div style="font-size:14px;line-height:1.5">
+            <p style="margin:0 0 8px">好的！让我来帮你分析一下这个问题 🔍。首先，我需要了解一下 CI 的配置情况，然后我会查看日志，接着我会分析可能的原因。经过我的仔细分析，我发现问题可能出在 Node 22 的全局 fetch 默认保持连接（keep-alive）上，而测试里的 mock server 从不主动关闭，这导致 Jest 一直在等待事件循环清空，直到被 CI 的 30 分钟上限杀掉，而 Node 20 没有这个默认行为所以是正常的，另外我还注意到最近 3 次失败都卡在 upload.test.ts 之后没有任何输出，并且只有这个文件使用了裸 fetch，其他测试都是走 supertest 的，这个自带连接关闭，同时 mockServer.ts 的 afterAll 只清理了路由没有调用 close()。<b style="color:#e11">⚠️ 重要：请注意这是一个非常严重的问题！！</b> 希望这些信息对你有帮助 😊 如果还有其他问题请随时告诉我！</p>
+          </div>
+        </div>
+        <div class="good"><span class="lbl">✓ 本方案</span>
+          <div class="prose" style="font-size:14px">
+            <div class="answer" style="padding:8px 12px"><div class="k">结论</div>超时来自 <code>upload.test.ts</code>：Node 22 的 fetch 默认 keep-alive，mock server 又不关闭，Jest 一直等到被 CI 杀掉。</div>
+            <h3 style="font-size:14px">依据</h3>
+            <ul><li><strong>日志停在同一位置</strong>：近 3 次都卡在该文件后。</li><li><strong>只有它用裸 fetch</strong>：其他测试走 supertest。</li><li><strong>mock server 没有 close()</strong>。</li></ul>
+            <div class="next" style="margin-top:12px!important;padding-top:8px"><div class="k">下一步</div>最小修复 3 行。要我提交吗？</div>
+          </div>
+        </div>
+      </div>
+      <div class="note">左侧的问题：开场客套、过程叙述、一句话 200 字、整句加粗、情绪化标点、emoji 当图标、红色用于非错误、结尾废话。右侧：结论先行、每句一个意思、列表承载并列项、只加粗引导词、红色一次都没出现。</div>
+    </div>
+
+    <div class="card">
+      <h3>长回答放进气泡 vs 开放排版</h3>
+      <div class="two">
+        <div class="bad"><span class="lbl">✕ 气泡 + 右对齐 + 彩色背景</span>
+          <div style="display:flex;justify-content:flex-end"><div style="max-width:78%;background:#2457D6;color:#fff;border-radius:18px 18px 4px 18px;padding:10px 14px;font-size:14px;line-height:1.5">两个 Node 版本的差异最可能在：原生模块重新编译、测试框架默认超时、以及 Node 22 对 fetch 的 keep-alive 行为变化。先看 CI 日志里哪一步卡住，再看 lockfile 有没有锁死某个只支持 Node 20 的依赖。然后对比两个版本的 jest 配置差异。</div></div>
+        </div>
+        <div class="good"><span class="lbl">✓ 左对齐、无气泡、保证行长</span>
+          <div class="prose" style="font-size:14px"><p>两个 Node 版本的差异最可能在三处：</p><ol><li>原生模块重新编译</li><li>测试框架默认超时</li><li>Node 22 对 fetch 的 keep-alive 行为变化</li></ol><p>先看 CI 日志里哪一步卡住，再看 lockfile 是否锁死了只支持 Node 20 的依赖。</p></div>
+        </div>
+      </div>
+      <div class="note">气泡适合 ≤ 2 行的对话；Agent 的输出是文档级长度，气泡会压缩行长、白字反色会增加眩光、右对齐打乱阅读起点。用户消息保留气泡（短、需要身份区分），Agent 消息不用。</div>
+    </div>
+
+    <div class="card">
+      <h3>“彩虹”状态 vs 受限色相</h3>
+      <div class="two">
+        <div class="bad"><span class="lbl">✕</span><div style="display:flex;gap:8px;flex-wrap:wrap;font-size:12px"><span style="background:#ff3b30;color:#fff;padding:3px 8px;border-radius:4px">读取文件</span><span style="background:#ff9500;color:#fff;padding:3px 8px;border-radius:4px">搜索</span><span style="background:#ffcc00;color:#000;padding:3px 8px;border-radius:4px">编辑</span><span style="background:#34c759;color:#fff;padding:3px 8px;border-radius:4px">运行</span><span style="background:#5ac8fa;color:#000;padding:3px 8px;border-radius:4px">提交</span><span style="background:#af52de;color:#fff;padding:3px 8px;border-radius:4px">思考</span></div></div>
+        <div class="good"><span class="lbl">✓</span><div style="display:flex;gap:8px;flex-wrap:wrap;font-size:12px"><span class="st done"><span class="dot"><svg><use href="#i-done"/></svg></span><code>Read</code></span><span class="st done"><span class="dot"><svg><use href="#i-done"/></svg></span><code>Grep</code></span><span class="st done"><span class="dot"><svg><use href="#i-done"/></svg></span><code>Edit</code></span><span class="st running"><span class="dot"><svg><use href="#i-running"/></svg></span><code>Bash</code></span><span class="st pending"><span class="dot"><svg><use href="#i-pending"/></svg></span><code>Commit</code></span></div></div>
+      </div>
+      <div class="note">左边用颜色区分“工具种类”，但种类对读者并不重要，而且耗尽了所有色相，真正的错误再也没有颜色可用。右边：工具名用等宽字体（形状区分），颜色只表达状态。</div>
+    </div>
+  </div>
+</section>
+
+</main>
+<script src="demo.js"></script>
+</body>
+</html>
