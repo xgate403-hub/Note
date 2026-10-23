@@ -15,6 +15,7 @@
 | 字体文件（OFL 授权；中文字体体积大，用脚本获取） | [`demo/fonts/`](demo/fonts/) · [`tools/fetch-fonts.sh`](tools/fetch-fonts.sh) |
 | 截图脚本 / 39 张场景截图 | [`tools/shoot.mjs`](tools/shoot.mjs) · [`screenshots/`](screenshots/) |
 | 在线原型（Artifact，私密，含字体） | https://claude.ai/artifact/FooPTd3AKHCCNHwEfLTyLH |
+| 设计系统 Artifact（令牌 / 组件 / 字体，供其他项目引用） | https://claude.ai/artifact/8iAM1UJduZSoEag426FEJQ · 源文件 [`design-system/`](design-system/) |
 
 ---
 
