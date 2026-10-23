@@ -81,6 +81,7 @@
 /* 纯黑主题的排版补偿 */
 :root[data-theme="dark"] {
   --fw-body: 450;
+  --lh-body: 1.75;   /* 黑底上行间再松一点，减少上下行亮字互相干扰 */
   --hairline: 1px;
 }
 

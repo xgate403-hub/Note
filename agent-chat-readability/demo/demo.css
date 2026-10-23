@@ -69,7 +69,7 @@ body.capture .nav{display:none}
 .prose .lead{font-size:var(--fs-lg);line-height:1.55;color:var(--text)}
 
 /* 结论框：每条消息最多一个（隔离效应） */
-.answer{position:relative;border-left:3px solid var(--accent);background:var(--surface-2);padding:var(--space-3) var(--space-4);border-radius:0 var(--radius-md) var(--radius-md) 0}
+.answer{position:relative;border-left:3px solid var(--accent);background:var(--accent-bg);padding:var(--space-3) var(--space-4);border-radius:0 var(--radius-md) var(--radius-md) 0}
 .answer .k{font-size:var(--fs-xs);color:var(--text-2);font-weight:var(--fw-semibold);letter-spacing:.04em;margin-bottom:2px;display:flex;gap:8px;align-items:center}
 .answer .k .px{color:var(--text-3)}
 
@@ -150,7 +150,7 @@ body.capture .running .dot svg{animation:none}
 .plan .it .right{font-size:var(--fs-2xs);color:var(--text-3);font-variant-numeric:tabular-nums;font-family:var(--font-pixel);-webkit-font-smoothing:none}
 .plan .it.done .label{color:var(--text-3);text-decoration:line-through;text-decoration-color:var(--border-strong)}
 .plan .it.pending .label{color:var(--text-2)}
-.plan .it.running{background:var(--surface-2);box-shadow:inset 3px 0 0 var(--accent)}
+.plan .it.running{background:var(--accent-bg);box-shadow:inset 3px 0 0 var(--accent)}
 .plan .it.running .label{font-weight:var(--fw-medium)}
 .plan .it.failed{background:var(--danger-bg)}
 .plan .it.waiting{background:var(--warning-bg)}
@@ -184,7 +184,7 @@ body.capture .running .dot svg{animation:none}
 .ask .opts{display:grid;gap:var(--space-2);padding:var(--space-2) var(--space-4) var(--space-4)}
 .opt{display:grid;grid-template-columns:18px 1fr;gap:var(--space-3);padding:var(--space-3);border:var(--hairline) solid var(--border);border-radius:var(--radius-md);background:var(--surface);cursor:pointer;font-size:var(--fs-sm);line-height:1.55}
 .opt .r{width:16px;height:16px;border-radius:50%;border:2px solid var(--border-strong);margin-top:2px}
-.opt.rec{border-color:var(--accent-line);background:var(--surface-2)}
+.opt.rec{border-color:var(--accent-line);background:var(--accent-bg)}
 .opt.rec .r{border-color:var(--accent);box-shadow:inset 0 0 0 3px var(--surface);background:var(--accent)}
 .opt .l{font-weight:var(--fw-semibold);color:var(--text);font-size:var(--fs-md);display:flex;gap:8px;align-items:center}
 .opt .tag{font-size:var(--fs-2xs);font-weight:var(--fw-semibold);color:var(--accent);background:var(--surface);border:var(--hairline) solid var(--accent-line);border-radius:999px;padding:1px 6px;letter-spacing:.03em}
@@ -224,7 +224,7 @@ body.capture .skeleton{animation:none}
 .g-node .sub{fill:var(--text-3);font-size:11px;font-family:var(--font-mono)}
 .g-node.done rect{stroke:var(--success);fill:var(--surface)}
 .g-node.done text{fill:var(--text-2)}
-.g-node.running rect{stroke:var(--accent);stroke-width:2;fill:var(--surface-2)}
+.g-node.running rect{stroke:var(--accent);stroke-width:2;fill:var(--accent-bg)}
 .g-node.running text{font-weight:600}
 .g-node.failed rect{stroke:var(--danger);fill:var(--danger-bg)}
 .g-node.pending rect{stroke-dasharray:4 3;fill:var(--surface)}
