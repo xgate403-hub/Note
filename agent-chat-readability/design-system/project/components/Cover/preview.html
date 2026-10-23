@@ -1,0 +1,32 @@
+<!-- @dsCard height=288 -->
+<!doctype html><html><head><meta charset="utf-8">
+<style>
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-sans);width:960px;height:288px;position:relative;overflow:hidden}
+.name{position:absolute;left:48px;bottom:60px;width:440px;font-size:72px;line-height:.95;font-weight:600;letter-spacing:-.01em;color:var(--text)}
+.tag{position:absolute;left:48px;bottom:32px;width:440px;font-size:13px;line-height:1.4;color:var(--text-3)}
+svg{position:absolute;left:0;top:0}
+.ink{fill:var(--text)} .acc{fill:var(--accent)} .accbg{fill:var(--accent-bg)} .s2{fill:var(--surface-3)} .s1{fill:var(--surface-2)}
+.tile{rx:6px} .dot{fill:var(--text-4)}
+</style></head><body>
+<!--
+  derivation
+  blocks: text (ink) 192×144 · accent 96×96 · accent-bg 192×96 · surface-3 96×48 · surface-2 288×48 —— 边长为 space-4 的倍数（48/96/192/288）
+  arrangement: 右半区 x≥480 的 flush 模块网格，深色 ink 块压住右上角并出血顶边；中性为主、一块灰紫为唯一有彩色，和 UI 的色彩预算一致
+  pattern: 精确 / 技术 / 像素字体 / 4px 基数 → 一个 dot grid，间距 space-4 (16px)，24×4 个点落在 accent-bg 块上，被 ink 块裁掉一角
+  scales: space-4=16 · tile rx = radius-sm 6px · 点半径 1.5px
+-->
+<svg width="960" height="288" viewBox="0 0 960 288" aria-hidden="true">
+  <rect class="s1" x="480" y="192" width="288" height="48" rx="6"/>
+  <rect class="accbg tile" x="576" y="96" width="192" height="96"/>
+  <g id="dots" class="dot"></g>
+  <rect class="ink tile" x="768" y="0" width="192" height="144"/>
+  <rect class="acc tile" x="480" y="96" width="96" height="96"/>
+  <rect class="s2 tile" x="768" y="144" width="96" height="48"/>
+  <rect class="s1 tile" x="864" y="144" width="96" height="96"/>
+</svg>
+<div class="name">Agent<br>会话设计系统</div>
+<div class="tag">把注意力留给文本：一种常驻有彩色，其余是灰。</div>
+<script>
+(function(){const g=document.getElementById('dots');const NS='http://www.w3.org/2000/svg';for(let r=0;r<5;r++)for(let c=0;c<11;c++){const x=592+c*16,y=112+r*16;const d=document.createElementNS(NS,'circle');d.setAttribute('cx',x);d.setAttribute('cy',y);d.setAttribute('r',1.5);g.appendChild(d)}})();
+</script>
+</body></html>
